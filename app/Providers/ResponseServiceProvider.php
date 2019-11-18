@@ -23,14 +23,4 @@ class ResponseServiceProvider extends ServiceProvider
             return response()->json($content, $status);
         });
     }
-
-    /**
-     * Register the application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
 }
