@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateInterfacesTable extends Migration
+class CreateLogTablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateInterfacesTable extends Migration
      */
     public function up()
     {
-        Schema::create('interface_tables', function (Blueprint $table) {
+        Schema::create('log_tables', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateInterfacesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('interface_table');
+        Schema::dropIfExists('log_tables');
     }
 }

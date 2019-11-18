@@ -4,7 +4,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Response extends Model
+class RequestTable extends Model
 {
     //
 }
