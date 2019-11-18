@@ -13,7 +13,7 @@ class CreateInterfacesTable extends Migration
      */
     public function up()
     {
-        Schema::create('interfaces', function (Blueprint $table) {
+        Schema::create('interface_table', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateInterfacesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('interfaces');
+        Schema::dropIfExists('interface_table');
     }
 }
