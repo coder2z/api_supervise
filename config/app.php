@@ -178,7 +178,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         //注册响应服务
         App\Providers\ResponseServiceProvider::class,
-
+        //注册模型观察者服务
+        App\Providers\ModelListenerServiceProvider::class,
     ],
 
     /*
