@@ -14,7 +14,16 @@ class CreateMutualsTable extends Migration
     public function up()
     {
         Schema::create('mutuals', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->comment('交互表主键id');//交互表主键id
+
+            $table->integer('interface_id')->unsigned()->comment('外键interface_tables表主键id,设置restrict');
+            $table->foreign('interface_id')//外键interface_tables表主键id,设置restrict
+                    ->references('id')->on('interface_tables');
+
+            $table->integer('front_uesr_id')->unsigned()->comment('外键user表主键id,设置restrict');
+            $table->foreign('front_uesr_id')//外键user表主键id,设置restrict
+                    ->references('id')->on('users');
+
             $table->timestamps();
         });
     }
