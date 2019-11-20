@@ -14,6 +14,8 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    \App\Utils\Logs::logError('用户插入失败',[]);
+    \App\Utils\Logs::logError('用户插入失败',["wsadaww"]);
+    // \App\Utils\Logs::logWarning('用户插入失败',["wsadaww"]);
+    // \App\Utils\Logs::logInfo('用户插入失败',["wsadaww"]);
     return response()->success();
 });
