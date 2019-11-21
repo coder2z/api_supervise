@@ -4,6 +4,8 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -31,7 +33,7 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -42,12 +44,26 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
      * @return \Illuminate\Http\Response
+     * @throws Exception
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+//        return parent::render($request, $exception);
+        if ($exception instanceof HttpException) {
+            if ($exception->getStatusCode() == '404') {
+                return response()->fail(404, 'Not found', null, 404);
+            } else {
+                \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
+                return response()->fail(500, '服务器错误!', null, 500);
+            }
+        } else if ($exception instanceof AuthenticationException) {
+            return response()->fail(403, '没有权限!', null, 403);
+        } else {
+            \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
+            return response()->fail(500, '服务器错误!', null, 500);
+        }
     }
 }
