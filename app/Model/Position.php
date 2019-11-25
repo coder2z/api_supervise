@@ -18,4 +18,16 @@ class Position extends Model
      * @var array
      */
     protected $guarded = [];
+
+    /**
+     * @param $userID
+     */
+    public static function checkPosition($userID){
+        $positions=array();
+        $position=self::where('user_id',$userID)->get(['position_code']);
+        foreach ($position as $item){
+            $positions[] =$item->position_code;
+        };
+        return $positions;
+    }
 }

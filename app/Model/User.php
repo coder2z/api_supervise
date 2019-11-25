@@ -74,9 +74,13 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function getUserInfo($UserId, $array = [])
     {
         try {
-            return $array == null ?
-                self::where('id', $UserId)->get() :
-                self::where('id', $UserId)->get($array);
+            if ($array == null) {
+                $userInfo = self::where('id', $UserId)->get();
+            } else {
+                $userInfo = self::where('id', $UserId)->get($array);
+                $userInfo[0]['positions'] = Position::checkPosition($UserId);
+            }
+            return $userInfo;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
             return null;
