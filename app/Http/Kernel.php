@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:10,1',
             'bindings',
+            \App\Http\Middleware\ThrottleRequests::class
         ],
     ];
 

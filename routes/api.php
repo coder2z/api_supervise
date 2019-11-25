@@ -14,7 +14,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('oAuth')->namespace('OAuth')->middleware('throttle')->group(function (){
+Route::prefix('oAuth')->namespace('OAuth')->group(function (){
     Route::post('login','AuthController@login');//登陆
     Route::post('info','AuthController@info');//获取用户信息
     Route::post('registered','AuthController@registered');//用户注册
