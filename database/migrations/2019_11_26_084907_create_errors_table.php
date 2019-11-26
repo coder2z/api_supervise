@@ -16,7 +16,7 @@ class CreateErrorsTable extends Migration
         Schema::create('errors', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('error_code')->unsigned();
-            $table->text('error_info')->unsigned();
+            $table->text('error_info');
             $table->integer('http_code')->unsigned();
             $table->timestamps();
         });
