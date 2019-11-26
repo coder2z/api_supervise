@@ -19,3 +19,5 @@ Route::get('/', function () {
     // \App\Utils\Logs::logInfo('用户插入失败',["wsadaww"]);
     return response()->success();
 });
+
+Route::get('/ProjectAdmin/getWord','ProjectAdmin\WordController@getWord');
