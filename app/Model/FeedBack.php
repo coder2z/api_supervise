@@ -16,7 +16,7 @@ class FeedBack extends Model
     public static function getInfo_echo($id)
     {
         $data=array();$i=0;
-        $info=FeedBack::where("to_user_id",$id)->get();
+        $info=self::where("to_user_id",$id)->get();
         foreach ($info as $item) {
             $user=User::find($item->from_uesr_id);
             if($user==null)$user["name"]="用户已注销";
