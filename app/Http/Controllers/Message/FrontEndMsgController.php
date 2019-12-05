@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Message;
 
+use App\Http\Requests\FrontEndMsg_request;
 use App\Jobs\SendEmail;
 use App\Model\ProjectMember;
 use App\Model\User;
@@ -18,7 +19,7 @@ class FrontEndMsgController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function SendMail_All_Back(Request $request)
+    public function SendMail_All_Back(FrontEndMsg_request $request)
     {
         try
         {
@@ -59,6 +60,7 @@ class FrontEndMsgController extends Controller
         catch (Exception $exception)
         {
             return response()->json($exception);
+
         }
     }
 }
