@@ -26,14 +26,19 @@ class FrontEndMsg_request extends FormRequest
     public function rules()
     {
         return [
-            "project_id"=>"integer"
+            "title"=>"string|nullable",
+            "question"=>"string|nullable",
+            "reappear"=>"string|nullable",
+            "expect"=>"string|nullable",
+            "cause"=>"string|nullable",
+            "suggest"=>"string|nullable",
             //
         ];
     }
     public function messages()
     {
         return [
-            "project_id.integer"=>"项目号必须为数字",
+
         ];
     }
 

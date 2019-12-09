@@ -16,11 +16,11 @@ class ProjectMember extends Model
     //定义禁止操作时间
     public $timestamps = false;
 
-    public static function get_Info($project_id ,$array = [])
+    public static function get_Info($name,$argument ,$array = [])//获取project_id相关信息
     {
         try
         {
-        return $array==null ?  self::where("project_id",$project_id)->get():self::where("project_id",$project_id)->get($array);
+        return $array==null ?  self::where($name,$argument)->get():self::where($name,$argument)->get($array);
         }
         catch (Exception $exception)
         {
