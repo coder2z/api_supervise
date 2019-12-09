@@ -44,7 +44,6 @@ class AuthController extends Controller
         }
     }
 
-
     /**
      * 注册用户
      *

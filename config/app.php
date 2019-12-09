@@ -180,6 +180,8 @@ return [
         App\Providers\ResponseServiceProvider::class,
         //注册模型观察者服务
         App\Providers\ModelListenerServiceProvider::class,
+
+        Barryvdh\Cors\ServiceProvider::class,
     ],
 
     /*

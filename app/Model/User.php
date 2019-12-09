@@ -78,7 +78,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 $userInfo = self::where('id', $UserId)->get();
             } else {
                 $userInfo = self::where('id', $UserId)->get($array);
-                $userInfo[0]['positions'] = Position::checkPosition($UserId);
+//                $userInfo[0]['positions'] = Position::checkPosition($UserId);
             }
             return $userInfo;
         } catch (\Exception $e) {
