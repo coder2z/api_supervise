@@ -20,7 +20,7 @@ class FrontEndMsgController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function SendMail($id=[])
+    public function SendMail($id=[],$Info)
     {
         try
         {
@@ -37,7 +37,7 @@ class FrontEndMsgController extends Controller
                 }
             }
             $users = Array_unique($users);
-            $this->dispatch(new SendEmail($users));
+            $this->dispatch(new SendEmail($users,$Info));
             return true;
         }catch (Exception $exception)
         {
@@ -71,7 +71,7 @@ class FrontEndMsgController extends Controller
             {
                 Array_push($project_id,$item->project_id);
             }
-                if($this->SendMail($project_id))
+                if($this->SendMail($project_id,$content))
             {
                 $res=array("code"=>200,"msg"=>"success","data"=>"邮件已进入队列，正等待处理");
                 return response()->json($res);
@@ -101,14 +101,15 @@ class FrontEndMsgController extends Controller
         try
         {
             //$data= FeedBack::getInfo_echo(Auth::id());
-            $data= FeedBack::getInfo_echo(1);
+            $data= FeedBack::getInfo_echo(Auth::id());
             $res=array("code"=>200,"msg"=>"success","data"=>$data);
             return response()->json( $res);
         }
         catch (Exception $exception)
         {
+            Logs::logError('获取信息出错：', [$exception->getMessage()]);
+            $res=array("code"=>100,"msg"=>"false","data"=>"获取息出错");
             return response()->json($exception);
-
         }
     }
 }
