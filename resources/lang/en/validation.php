@@ -80,6 +80,9 @@ return [
     'timezone'             => ':attribute 必须是个有效的时区.',
     'unique'               => ':attribute 已存在',
     'url'                  => ':attribute 无效的格式',
+    'check_password'       => '修改密码的长度需要在6-16位之间',
+    'check_code'           => '请检查权限码',
+    'check_state'          => '请检查状态码',
     /*
 |--------------------------------------------------------------------------
 | Custom Validation Language Lines
@@ -106,6 +109,7 @@ return [
 |
 */
     'attributes' => [
+<<<<<<< Updated upstream
         'email'                            => '邮箱',
         'password'                         => '密码',
         'phone_number'                     => '电话号码',
@@ -114,5 +118,14 @@ return [
         'ProjectDescription'               => '项目描述',
         'RequirementDocument'              => '需求文档',
         'PrototypeMap'                     => '原型图'
+=======
+        'email'                            =>'邮箱',
+        'password'                         =>'密码',
+        'phone_number'                     =>'电话号码',
+        'password_confirmation'            =>'确认密码',
+        'state'                            =>'状态',
+        'access_code'                      =>'权限',
+        'phone'                            =>'电话号码',
+>>>>>>> Stashed changes
     ],
 ];
