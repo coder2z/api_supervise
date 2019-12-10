@@ -30,12 +30,17 @@ class Annex extends Model
 
     public static function FindAnnexPath($id, $type)
     {
-        $result = self::where('project_id', $id)->where('type', $type)->first();
-        if ($result) {
-            $path = $result->path;
-            $delete = self::destroy($result->id);
-            return ($path && $delete) ? trim(strrchr($path, '/'), '/') : false;
-        } else {
+        try {
+            $result = self::where('project_id', $id)->where('type', $type)->first();
+            if ($result) {
+                $path = $result->path;
+                $delete = self::destroy($result->id);
+                return ($path && $delete) ? trim(strrchr($path, '/'), '/') : false;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            Logs::logError('查找附件表路径失败', [$e->getMessage()]);
             return false;
         }
     }

@@ -25,8 +25,8 @@ class ProjectController extends Controller
 
     public function setProject(getProjectRequest $request, $id)
     {
-        $adminid = User::find(1);
-        // $adminid = Auth::id();
+        // $adminid = User::find(1);
+        $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
         }
@@ -50,8 +50,8 @@ class ProjectController extends Controller
 
     public function addProject(getProjectRequest $request)
     {
-        $adminid = User::find(1);
-        // $adminid = Auth::id();
+        // $adminid = User::find(1);
+        $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
         }
@@ -80,7 +80,6 @@ class ProjectController extends Controller
 
     private function upload($file, $status, $project_id)
     {
-        // dd($file);
         //解析当前文档是否有效
         if ($file->isValid()) {
             //文件后缀名
@@ -115,8 +114,8 @@ class ProjectController extends Controller
     {
         $projectinfo['name'] = $request->ProjectName;
         $projectinfo['discribe'] = $request->ProjectDescription;
-        $projectinfo['amdin_user_id'] = User::find(1)->id;
-        // $projectinfo['amdin_user_id'] = Auth::id();
+        // $projectinfo['amdin_user_id'] = User::find(1)->id;
+        $projectinfo['amdin_user_id'] = Auth::id();
         $projectinfo['pre_url'] = 'null';
         $projectinfo['created_at'] = date('Y-m-d H:i:s');
         $projectinfo['updated_at'] = date('Y-m-d H:i:s');
