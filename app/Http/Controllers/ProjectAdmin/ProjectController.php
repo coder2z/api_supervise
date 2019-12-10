@@ -14,18 +14,21 @@ class ProjectController extends Controller
     public function getAllProject()
     {
         $projectInfo = Project::getAllProjectInfo();
-        return $projectInfo != null ? response()->success(200, '获取信息成功', $projectInfo) : response()->fail(100, '获取信息失败', $projectInfo);
+        return $projectInfo != null ?
+            response()->success(200, '获取信息成功', $projectInfo) :
+            response()->fail(100, '获取信息失败', $projectInfo);
     }
 
     public function getProject($id)
     {
         $projectInfo = Project::getProjectInfo($id);
-        return $projectInfo != null ? response()->success(200, '获取信息成功', $projectInfo) : response()->fail(100, '获取信息失败', $projectInfo);
+        return $projectInfo != null ?
+            response()->success(200, '获取信息成功', $projectInfo) :
+            response()->fail(100, '获取信息失败', $projectInfo);
     }
 
     public function setProject(getProjectRequest $request, $id)
     {
-        // $adminid = User::find(1);
         $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
@@ -42,7 +45,7 @@ class ProjectController extends Controller
 
         if (!self::upload($request->RequirementDocument, 'word', $id))
             return response()->fail(100, 'word文件有问题', null);
-        // dd(123);
+
         if (!self::upload($request->PrototyMap, 'rp', $id))
             return response()->fail(100, 'rp文件有问题  ', null);
         return response()->success(200, '更新成功', null);
@@ -50,7 +53,6 @@ class ProjectController extends Controller
 
     public function addProject(getProjectRequest $request)
     {
-        // $adminid = User::find(1);
         $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
@@ -114,7 +116,6 @@ class ProjectController extends Controller
     {
         $projectinfo['name'] = $request->ProjectName;
         $projectinfo['discribe'] = $request->ProjectDescription;
-        // $projectinfo['amdin_user_id'] = User::find(1)->id;
         $projectinfo['amdin_user_id'] = Auth::id();
         $projectinfo['pre_url'] = 'null';
         $projectinfo['created_at'] = date('Y-m-d H:i:s');
