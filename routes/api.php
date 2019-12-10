@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpParamsInspection */
+<?php
+
+/** @noinspection PhpParamsInspection */
 
 /*
 |--------------------------------------------------------------------------
@@ -14,10 +16,19 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('oAuth')->namespace('OAuth')->group(function (){
-    Route::post('login','AuthController@login');//登陆
-    Route::post('info','AuthController@info');//获取用户信息
-    Route::post('registered','AuthController@registered');//用户注册
-    Route::post('logout','AuthController@logout');//退出登陆
-    Route::post('refresh','AuthController@refresh');//刷新token
+Route::prefix('oAuth')->namespace('OAuth')->group(function () {
+    Route::post('login', 'AuthController@login'); //登陆
+    Route::post('info', 'AuthController@info'); //获取用户信息
+    Route::post('registered', 'AuthController@registered'); //用户注册
+    Route::post('logout', 'AuthController@logout'); //退出登陆
+    Route::post('refresh', 'AuthController@refresh'); //刷新token
+});
+
+//yikang
+Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
+    Route::get('getAllProject', 'ProjectController@getAllProject');
+    Route::get('getProject/{id}', 'ProjectController@getProject');
+    Route::post('setProject/{id}', 'ProjectController@setProject');
+    Route::post('addProject', 'ProjectController@addProject');
+    Route::delete('deleteProject/{id}', 'ProjectController@deleteProject');
 });
