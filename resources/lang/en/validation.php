@@ -108,7 +108,11 @@ return [
     'attributes' => [
         'email'                            => '邮箱',
         'password'                         => '密码',
-        'phone_number'                     =>'电话号码',
-        'password_confirmation'            =>'确认密码'
+        'phone_number'                     => '电话号码',
+        'password_confirmation'            => '确认密码',
+        'ProjectName'                      => '项目名称',
+        'ProjectDescription'               => '项目描述',
+        'RequirementDocument'              => '需求文档',
+        'PrototypeMap'                     => '原型图'
     ],
 ];
