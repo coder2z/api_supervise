@@ -20,5 +20,3 @@ Route::get('/', function () {
 
 
 });
-Route::get("/MyMessage","Message\FrontEndMsgController@MyMessage");
-Route::get("/SendMail_All_Back","Message\FrontEndMsgController@SendMail_All_Back");
