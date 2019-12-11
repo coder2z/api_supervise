@@ -37,19 +37,19 @@ Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
 
 //yikang
 Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
-    Route::get('getAllProject', 'ProjectController@getAllProject');
-    Route::get('getProject/{id}', 'ProjectController@getProject');
-    Route::post('setProject/{id}', 'ProjectController@setProject');
-    Route::post('addProject', 'ProjectController@addProject');
-    Route::delete('deleteProject/{id}', 'ProjectController@deleteProject');
+    Route::get('getAllProject', 'ProjectController@getAllProject'); //获取全部项目信息
+    Route::get('getProject/{id}', 'ProjectController@getProject'); //获取指定{id}项目信息
+    Route::post('setProject/{id}', 'ProjectController@setProject'); //修改项目
+    Route::post('addProject', 'ProjectController@addProject'); //添加项目
+    Route::delete('deleteProject/{id}', 'ProjectController@deleteProject'); //删除项目
 });
 
 //qiu
-Route::namespace('Admin')->group(function (){
-    Route::get('getUser','AdminController@getUser')->middleware('manage');//获取某个状态下的所有用户
-    Route::get('DeleteUser','AdminController@DeleteUser')->middleware('manage');//删除用户
-    Route::post('SearchUser','AdminController@SearchUser')->middleware('manage');//搜索用户
-    Route::get('ShowUserInfo','AdminController@ShowUserInfo')->middleware('manage');//展示用户信息
-    Route::post('UpdateUserInfo','AdminController@UpdateUserInfo')->middleware('manage');//修改用户信息
-    Route::post('AddUser','AdminController@AddUser')->middleware('manage');//新增用户信息
+Route::namespace('Admin')->group(function () {
+    Route::get('getUser', 'AdminController@getUser')->middleware('manage');//获取某个状态下的所有用户
+    Route::get('DeleteUser', 'AdminController@DeleteUser')->middleware('manage');//删除用户
+    Route::post('SearchUser', 'AdminController@SearchUser')->middleware('manage');//搜索用户
+    Route::get('ShowUserInfo', 'AdminController@ShowUserInfo')->middleware('manage');//展示用户信息
+    Route::post('UpdateUserInfo', 'AdminController@UpdateUserInfo')->middleware('manage');//修改用户信息
+    Route::post('AddUser', 'AdminController@AddUser')->middleware('manage');//新增用户信息
 });
