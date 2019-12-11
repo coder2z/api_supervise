@@ -86,7 +86,10 @@ class WordController extends Controller
         $textrun->addText("♦ ".$tableMetName,$fontStyle,array('spaceAfter' => 240));
         //表格部分
         $retErrorMsg = array('code' => 100, 'msg' =>'失败', 'data' => '失败信息！');
-        $retSuccesMsg =array('code' => 100, 'msg' =>'失败', 'data' => '失败信息！');
+        $retSuccesMsg =array('code' => 100, 'msg' =>'失败', 'data' => array('信息1'=>'信息1显示','信息2'=>'信息2显示'));
+        $arr = array('status' => true,'errMsg' => '错误了','member' =>array(array('name' => '李逍遥','gender' => '男'),array('name' => '赵灵儿','gender' => '女')));
+        $switchJson = json_encode($arr, JSON_UNESCAPED_UNICODE);
+        $testMsg ="{\"msg\": \"成功\",\"code\": 200,\"data\":{\"current_page\": 1,\"user\":[{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},],\"first_page_url\": \"http://www.api.com/UserItem/0?page=1\",\"from\": 1,\"last_page\": 3,\"last_page_url\": \"http://www.api.com/UserItem/0?page=3\",\"next_page_url\": \"http://www.api.com/UserItem/0?page=2\",\"path\": \"http://www.api.com/UserItem/0\",\"per_page\": 8,\"prev_page_url\": null,\"to\": 8,\"total\": 18,\"item\":[{\"id\": \"项目Id\",\"name\": \"项目名\",},{\"id\": \"项目Id\",\"name\": \"项目名\",},{\"id\": \"项目Id\",\"name\": \"项目名\",},]}}";
         $metFun = "导出项目接口文档";
         substr($metFun,0,1);
         $requestMet = "get";
@@ -125,30 +128,78 @@ class WordController extends Controller
         //第六行
         $table->addRow(4000);
         $table->addCell(2000)->addText("成功返回示例",$fontStylebold);
-        $table->addCell(6000,array('gridSpan' => 3))->addText($retSuccesMsg,$fontStyle);
+        $table->addCell(6000,array('gridSpan' => 3))->addText($metFun,$fontStyle);
         //第七行
         $table->addRow(4000);
         $table->addCell(2000)->addText("失败返回示例",$fontStylebold);
         $cell1 = $table->addCell(6000,array('gridSpan' => 3));
         $celltext = $cell1->addTextRun($paragraphStyleName);
-        $celltext->addText("{",$fontStyle);
-        $celltext->addTextBreak();
-        $celltext->addText("    ",$fontStyle);
-        foreach ($applicationMess as $key1 => $vaule1) {
-            if(is_array($vaule1)){
-
+        foreach ($this->mb_str_split($testMsg) as $key){
+            if ($key == '['){
+                do{
+                    $celltext->addText($key, $fontStyle);
+                    $celltext->addTextBreak();
+                    $celltext->addText("        ",$fontStyle);
+                }while($key == ']');
             }
-            $celltext->addText("\"", $fontStyle);
-            $celltext->addText($key1, $fontStyle);
-            $celltext->addText("\"", $fontStyle);
-            $celltext->addText(":", $fontStyle);
-            $celltext->addText("\"", $fontStyle);
-            $celltext->addText($vaule1, $fontStyle);
-            $celltext->addText("\"", $fontStyle);
-            $celltext->addText(",", $fontStyle);
-            $celltext->addTextBreak();
+            elseif ($key == ','){
+                $celltext->addText($key, $fontStyle);
+                $celltext->addTextBreak();
+                $celltext->addText("    ",$fontStyle);
+            }
+            elseif($key ==  '{'){
+                $celltext->addText($key, $fontStyle);
+                $celltext->addTextBreak();
+                $celltext->addText("    ",$fontStyle);
+            }
+            elseif($key ==  '}'){
+                $celltext->addTextBreak();
+                $celltext->addText("    ",$fontStyle);
+                $celltext->addText($key, $fontStyle);
+            }
+            else{
+                $celltext->addText($key,$fontStyle);
+            }
         }
-        $celltext->addText("}",$fontStyle);
+//        $celltext->addText("{",$fontStyle);
+//        $celltext->addTextBreak();
+//        $celltext->addText("    ",$fontStyle);
+//        foreach ($retSuccesMsg as $key1 => $vaule1) {
+//            if(is_array($vaule1)){
+//                $celltext->addText("{",$fontStyle);
+//                $celltext->addText("[",$fontStyle);
+//                $celltext->addTextBreak();
+//                $celltext->addText("    ",$fontStyle);
+//                foreach ($vaule1 as $key2 => $vaule2){
+//                    $celltext->addText("{",$fontStyle);
+//                    $celltext->addTextBreak();
+//                    $celltext->addText("\"", $fontStyle);
+//                    $celltext->addText($key2, $fontStyle);
+//                    $celltext->addText("\"", $fontStyle);
+//                    $celltext->addText(":", $fontStyle);
+//                    $celltext->addText("\"", $fontStyle);
+//                    $celltext->addText($vaule2, $fontStyle);
+//                    $celltext->addText("\"", $fontStyle);
+//                    $celltext->addText(",", $fontStyle);
+//                    $celltext->addTextBreak();
+//                    $celltext->addText("}",$fontStyle);
+//                    $celltext->addTextBreak();
+//                }
+//                $celltext->addText("]",$fontStyle);
+//                $celltext->addText("}",$fontStyle);
+//            }
+//                $celltext->addText("\"", $fontStyle);
+//                $celltext->addText($key1, $fontStyle);
+//                $celltext->addText("\"", $fontStyle);
+//                $celltext->addText(":", $fontStyle);
+//                $celltext->addText("\"", $fontStyle);
+//                $celltext->addText($vaule1, $fontStyle);
+//                $celltext->addText("\"", $fontStyle);
+//                $celltext->addText(",", $fontStyle);
+//                $celltext->addTextBreak();
+//
+//        }
+//        $celltext->addText("}",$fontStyle);
         $filename = $titile.".docx";
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -160,7 +211,8 @@ class WordController extends Controller
         $xmlWriter->save("php://output");
     }
 
-    public function Test(){
-            echo "Perfect";
+    function mb_str_split( $string ) {
+        // /u表示把字符串当作utf-8处理，并把字符串开始和结束之前所有的字符串分割成数组
+        return preg_split('/(?<!^)(?!$)/u', $string );
     }
 }

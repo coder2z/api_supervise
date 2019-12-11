@@ -12,4 +12,22 @@ class Position extends Model
     protected $primaryKey = '';
     //定义禁止操作时间
     public $timestamps = false;
+    /**
+     * 设置批量赋值
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * @param $userID
+     */
+    public static function checkPosition($userID){
+        $positions=array();
+        $position=self::where('user_id',$userID)->get(['position_code']);
+        foreach ($position as $item){
+            $positions[] =$item->position_code;
+        };
+        return $positions;
+    }
 }

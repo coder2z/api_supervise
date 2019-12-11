@@ -33,13 +33,16 @@ class AuthController extends Controller
             if (!$token = auth()->attempt($credentials)) {
                 return response()->fail(100, '账号或者用户名错误!', null);
             }
+            if (self::checkUser()) {
+                self::logout();
+                return response()->fail(100, '用户未启用!', null);
+            }
             return self::respondWithToken($token, '登陆成功!');
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('登陆失败!', [$e->getMessage()]);
             return response()->fail(500, '登陆失败!', null, 500);
         }
     }
-
 
     /**
      * 注册用户
@@ -50,19 +53,16 @@ class AuthController extends Controller
      */
     public function registered(RegisteredRequest $registeredRequest)
     {
-        $registeredInfo = $registeredRequest->except('password_confirmation');
-        $registeredInfo['password'] = bcrypt($registeredInfo['password']);
-        if (User::createUser($registeredInfo)) {
-            return response()->success(200, '注册成功!', null);
-        } else {
-            return response()->fail(100, '注册失败!', null);
-        }
+        return User::createUser(self::userHandle($registeredRequest)) ?
+            response()->success(200, '注册成功!', null) :
+            response()->fail(100, '注册失败!', null);
     }
 
     /**
      * 注销登陆
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function logout()
     {
@@ -129,5 +129,31 @@ class AuthController extends Controller
     protected function credentials($request)
     {
         return ['email' => $request['email'], 'password' => $request['password']];
+    }
+
+    /**
+     * 检测用户状态
+     * @param $request
+     * @return array|bool
+     */
+    protected function checkUser()
+    {
+        return auth()->user()->state == '0' ?
+            true :
+            false;
+    }
+
+    /**
+     * 用户信息处理
+     * @param $request
+     * @return array
+     */
+    protected function userHandle($request)
+    {
+        $registeredInfo = $request->except('password_confirmation');
+        $registeredInfo['password'] = bcrypt($registeredInfo['password']);
+        $registeredInfo['created_at'] = date("Y-m-d H:i:s");
+        $registeredInfo['updated_at'] = date("Y-m-d H:i:s");
+        return $registeredInfo;
     }
 }
