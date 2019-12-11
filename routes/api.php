@@ -26,13 +26,13 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
 
 
 //zhengruyuan
-Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function(){
-    Route::get('getAllUsers','UserController@getAllUsers');//显示全部人员
-    Route::get('getUpdateUser/{id}','UserController@getUpdateUser');//获取要修改的人员
-    Route::post('updateUser/{id}','UserController@updateUser');//修改人员
-    Route::get('deleteUser/{id}','UserController@deleteUser');//移除人员
-    Route::get('getUsers','UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)
-    Route::post('searchUser','UserController@searchUser');//搜索人员
+Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
+    Route::get('getAllUsers', 'UserController@getAllUsers');//显示全部人员
+    Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser');//获取要修改的人员
+    Route::post('updateUser/{id}', 'UserController@updateUser');//修改人员
+    Route::get('deleteUser/{id}', 'UserController@deleteUser');//移除人员
+    Route::get('getUsers', 'UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)
+    Route::post('searchUser', 'UserController@searchUser');//搜索人员
 });
 
 //yikang
@@ -42,5 +42,4 @@ Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
     Route::post('setProject/{id}', 'ProjectController@setProject');
     Route::post('addProject', 'ProjectController@addProject');
     Route::delete('deleteProject/{id}', 'ProjectController@deleteProject');
-});
 });
