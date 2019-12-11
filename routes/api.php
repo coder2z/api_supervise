@@ -32,13 +32,3 @@ Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
     Route::post('addProject', 'ProjectController@addProject');
     Route::delete('deleteProject/{id}', 'ProjectController@deleteProject');
 });
-
-//人员管理
-Route::namespace('Admin')->group(function (){
-    Route::get('getUser','AdminController@getUser');//获取某个状态下的所有用户
-    Route::get('DeleteUser','AdminController@DeleteUser');//删除用户
-    Route::post('SearchUser','AdminController@SearchUser');//搜索用户
-    Route::get('ShowUserInfo','AdminController@ShowUserInfo');//展示用户信息
-    Route::post('UpdateUserInfo','AdminController@UpdateUserInfo');//修改用户信息
-    Route::post('AddUser','AdminController@AddUser');//新增用户信息
-})->middleware('manage');
