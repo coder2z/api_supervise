@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /** @noinspection PhpParamsInspection */
 
@@ -42,3 +42,13 @@ Route::namespace('Admin')->group(function (){
     Route::post('UpdateUserInfo','AdminController@UpdateUserInfo');//修改用户信息
     Route::post('AddUser','AdminController@AddUser');//新增用户信息
 })->middleware('manage');
+
+//zhengruyuan
+Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function(){
+    Route::get('getAllUsers','UserController@getAllUsers');//显示全部人员
+    Route::get('getUpdateUser/{id}','UserController@getUpdateUser');//获取要修改的人员
+    Route::post('updateUser/{id}','UserController@updateUser');//修改人员
+    Route::get('deleteUser/{id}','UserController@deleteUser');//移除人员
+    Route::get('getUsers','UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)
+    Route::post('searchUser','UserController@searchUser');//搜索人员
+});
