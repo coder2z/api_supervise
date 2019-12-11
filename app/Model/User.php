@@ -135,12 +135,17 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
      * */
     public static function getUpdateUser($id){
         try{
-            $data = User::select('id','name','phone_number','email')
-                ->where('id',$id)
-                ->get();
-            return $data;
-        }catch (\Exception $e){
-            \App\Utils\Logs::logError('获取修改人员失败!', [$e->getMessage()]);
+            $user=User::find($user_id);
+            if($user!=null){
+                $message=$user->name.'被删除了';
+                \App\Utils\Logs::logInfo($message,Auth::user());
+                return $user->delete();
+            }else{
+                return null;
+            }
+        }catch(\Exception $e){
+            \App\Utils\Logs::logError('删除用户失败！', [$e->getMessage()]);
+            return null;
         }
     }
 
