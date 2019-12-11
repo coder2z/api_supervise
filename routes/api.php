@@ -43,3 +43,13 @@ Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
     Route::post('addProject', 'ProjectController@addProject');
     Route::delete('deleteProject/{id}', 'ProjectController@deleteProject');
 });
+
+//qiu
+Route::namespace('Admin')->group(function (){
+    Route::get('getUser','AdminController@getUser')->middleware('manage');//获取某个状态下的所有用户
+    Route::get('DeleteUser','AdminController@DeleteUser')->middleware('manage');//删除用户
+    Route::post('SearchUser','AdminController@SearchUser')->middleware('manage');//搜索用户
+    Route::get('ShowUserInfo','AdminController@ShowUserInfo')->middleware('manage');//展示用户信息
+    Route::post('UpdateUserInfo','AdminController@UpdateUserInfo')->middleware('manage');//修改用户信息
+    Route::post('AddUser','AdminController@AddUser')->middleware('manage');//新增用户信息
+});
