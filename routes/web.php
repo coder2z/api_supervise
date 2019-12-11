@@ -20,4 +20,4 @@ Route::get('/', function () {
     return response()->success();
 });
 
-Route::get('/ProjectAdmin/getWord','ProjectAdmin\WordController@getWord');
+
