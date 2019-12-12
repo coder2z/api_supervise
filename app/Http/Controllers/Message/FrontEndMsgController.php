@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Message;
 
-use App\Http\Requests\FrontEndMsg_request;
+use App\Http\Message\Requests\FrontEndMsg;
 use App\Jobs\SendEmail;
 use App\Model\ProjectMember;
 use App\Model\User;
@@ -45,7 +45,7 @@ class FrontEndMsgController extends Controller
             return false;
         }
     }
-    public  function  SendMail_All_Back(FrontEndMsg_request $request)
+    public  function  SendMail_All_Back(FrontEndMsg $request)
     {
         try
         {
@@ -59,9 +59,9 @@ class FrontEndMsgController extends Controller
                 "cause"=>$info->cause,
                 "suggest"=>$info->suggest,
             ];
-            $data->from_user_id=1;
-            $data->to_user_id=1;
-            $data->interface_id=1;
+            $data->from_user_id=Auth::id();
+            $data->to_user_id=0;//所有人
+            $data->interface_id=0;//所在所有项目
             $data->broadcast=1;//广播 0（前端） 1（后端） -1（所有）
             $data->content=json_encode($content);
             $data->save();
@@ -73,19 +73,19 @@ class FrontEndMsgController extends Controller
             }
                 if($this->SendMail($project_id,$content))
             {
-                $res=array("code"=>200,"msg"=>"success","data"=>"邮件已进入队列，正等待处理");
+                $res=array("code"=>200,"msg"=>"邮件已进入队列，正等待处理","data"=>"");
                 return response()->json($res);
             }
             else
             {
-                $res=array("code"=>200,"msg"=>"false","data"=>"邮件发送出现错误");
+                $res=array("code"=>200,"msg"=>"邮件发送出现错误","data"=>"");
                 return response()->json($res);
             }
         }
         catch (\Exception $exception)
         {
             Logs::logError('创建反馈信息出错：', [$exception->getMessage()]);
-            $res=array("code"=>100,"msg"=>"false","data"=>"创建反馈信息出错");
+            $res=array("code"=>100,"msg"=>"创建反馈信息出错","data"=>"");
             return response()->json($res);
         }
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Message\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class FrontEndMsg_request extends FormRequest
+class FrontEndMsg extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
