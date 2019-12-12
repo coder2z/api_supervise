@@ -2,13 +2,9 @@
 
 namespace App\Model;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Validator;
-use Illuminate\Validation\Rule;
-use DB;
-
+use Illuminate\Support\Facades\DB;
 
 /**
  * @method static create(array $array)
@@ -69,7 +65,6 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
 
     /**
      * 根据用户id获取用户信息
-     *
      * @param $UserId
      * @param array $array
      * @return mixed
@@ -78,13 +73,9 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function getUserInfo($UserId, $array = [])
     {
         try {
-            if ($array == null) {
-                $userInfo = self::where('id', $UserId)->get();
-            } else {
-                $userInfo = self::where('id', $UserId)->get($array);
-//                $userInfo[0]['positions'] = Position::checkPosition($UserId);
-            }
-            return $userInfo;
+            return $array == null ?
+                self::where('id', $UserId)->get() :
+                self::where('id', $UserId)->get($array);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
             return null;
@@ -111,23 +102,42 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         }
     }
 
-    //人员管理界面查看用户(可根据状态)
-    public static function getInfo($access_code,$page,$array=[]){
-        try{
-            return $access_code==null?
-                User::select($array)->paginate($page):
-                User::select($array)->where('access_code',$access_code)->paginate(8);
-        }catch (\Exception $e){
-            \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
-            return null;
-        }
+    /**
+     * 定义与project_members的关联
+     */
+    public function projectMembers(){
+        return $this->hasOne('App\ProjectMember','user_id','id');
     }
-    //删除用户
-    public static function DeleteUser($user_id){
+
+
+    /**
+     * 获取所有人员
+     *
+     * @return
+     * @throws \Exception
+     */
+    public static function getAllUsers(){
+        try{
+            $res = DB::table('users as t1')
+                ->join('project_members as t2','t1.id','=','t2.user_id')
+                ->join('projects as t3','t2.project_id','t3.id')
+                ->join('positions as t4','t1.id','t4.user_id')
+                ->select('t1.name','t2.type','t4.position_code','t1.phone_number','t1.email','t3.name')
+                ->paginate(4);
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
+        }
+        return $res;
+    }
+
+    /**
+     *获取要修改人员
+     * */
+    public static function getUpdateUser($id){
         try{
             $user=User::find($user_id);
             if($user!=null){
-                $message=$user->name+'被删除了';
+                $message=$user->name.'被删除了';
                 \App\Utils\Logs::logInfo($message,Auth::user());
                 return $user->delete();
             }else{
@@ -139,82 +149,86 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         }
     }
 
-    //搜索用户
-    public static function Search($search,$page,$array=[]){
+    /**
+     *修改人员
+     */
+    public static function updateUser($request,$id){
         try{
-            return User::select($array)->where('name','like','%'.$search.'%')
-                ->orwhere('phone_number','like','%'.$search.'%')
-                ->orwhere('email','like','%'.$search.'%')->paginate($page);
-        }catch(\Exception $e){
-            \App\Utils\Logs::logError('搜索用户失败！', [$e->getMessage()]);
-            return null;
-        }
-    }
-
-    //获取指定用户信息
-    public static function ShowUserInfo($user_id,$array=[]){
-        try{
-            return DB::table('users')->select($array)->where('users.id','=',$user_id)->get();
-        }catch(\Exception $e){
-            \App\Utils\Logs::logError('获取用户信息失败！', [$e->getMessage()]);
-            return null;
-        }
-    }
-
-    //修改用户
-    public static function UpdateUserInfo($array=[]){
-    try{
-        if($array[2]==null){
-            $user=User::where('id',$array[0])->update([
-                'name'          =>  $array[1],
-                'phone_number'  =>  $array[3],
-                'email'         =>  $array[4],
-                'access_code'   =>  $array[5],
-                'state'         =>  $array[6],
-                'updated_at'    =>  date("Y-m-d H:i:s")
-            ]);
-        }else{
-            $user=User::where('id',$array[0])->update([
-                'name'          =>  $array[1],
-                'password'      =>  bcrypt($array[2]),
-                'phone_number'  =>  $array[3],
-                'email'         =>  $array[4],
-                'access_code'   =>  $array[5],
-                'state'         =>  $array[6],
-                'updated_at'    =>  date("Y-m-d H:i:s")
-            ]);
-        }
-        if($user){
-            return true;
-        }else{
-            return false;
-        }
-    }catch(\Exception $e){
-        \App\Utils\Logs::logError('修改用户信息失败！', [$e->getMessage()]);
-        return false;
-    }
-    }
-
-    //新增用户
-    public static function AddUser($array=[]){
-        try{
-        $model=new User();
-        $model->name=$array[0];
-        $model->password=bcrypt($array[1]);
-        $model->phone_number=$array[2];
-        $model->email=$array[3];
-        $model->access_code=$array[4];
-        $model->created_at = date("Y-m-d H:i:s");
-        $model->updated_at = date("Y-m-d H:i:s");
-        $result=$model->save();
-        if($result){
-            return true;
-        }else{
-            return false;
-        }
+            $res = DB::table('users as t1')
+                ->leftJoin('project_members as t2','t1.id','t2.user_id')
+                ->leftJoin('projects as t3','t2.project_id','t3.id')
+                ->where('t1.id',$id)
+                ->update([
+                    't3.name'=>$request->name,
+                    't2.type'=>$request->type
+                ]);
+            return $res;
         }catch (\Exception $e){
-            \App\Utils\Logs::logError('新增用户信息失败！', [$e->getMessage()]);
-            return false;
+            \App\Utils\Logs::logError('修改人员失败!', [$e->getMessage()]);
+        }
+    }
+
+    /**
+     *移除人员
+     */
+    public static function deleteUser($pname,$id){
+        try{
+            $res = DB::table('users as t1')
+                ->leftjoin('project_members as t2','t1.id','t2.user_id')
+                ->leftjoin('projects as t3','t3.id','t2.project_id')
+                ->select('t2.id')
+                ->where('t3.name',$pname)
+                ->where('t1.id',$id)
+                ->get()
+                ->toarray();
+            $data = DB::table('project_members')
+                ->where('id',$res[0]->id)
+                ->update([
+                    'project_id'=>0,
+                ]);
+            return $data;
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('移除人员失败!', [$e->getMessage()]);
+        }
+    }
+
+    /**
+     *查询人员(根据传入数据的不同查出不同的数据)
+     */
+    public static function getUsers($data){
+        try{
+            $res = DB::table('users as t1')
+                ->join('project_members as t2','t1.id','=','t2.user_id')
+                ->join('projects as t3','t2.project_id','t3.id')
+                ->join('positions as t4','t1.id','t4.user_id')
+                ->select('t1.id','t1.name','t2.type','t4.position_code','t1.phone_number','t1.email','t3.name')
+                ->where('t2.type',$data['type'])
+                ->where('t3.name',$data['pname'])
+                ->paginate(4);
+            return $res;
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('获取人员失败!', [$e->getMessage()]);
+        }
+    }
+
+    /**
+     * 查询
+     */
+    public static function searchUser($data){
+        try{
+            $res = DB::table('users as t1')
+                ->leftJoin('project_members as t2','t1.id','=','t2.user_id')
+                ->leftJoin('projects as t3','t2.project_id','t3.id')
+                ->join('positions as t4','t1.id','t4.user_id')
+                ->select('t1.id','t1.name','t2.type','t4.position_code','t1.phone_number','t1.email','t3.name')
+                ->where('t1.name','like','%'.$data.'%')
+                ->orwhere('t1.email','like','%'.$data.'%')
+                ->orwhere('t1.phone_number','like','%'.$data.'%')
+                ->paginate(4)
+                ->toarray();
+            return $res;
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('搜索失败!', [$e->getMessage()]);
         }
     }
 }
