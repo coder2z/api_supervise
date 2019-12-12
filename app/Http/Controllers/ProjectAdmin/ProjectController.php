@@ -143,8 +143,6 @@ class ProjectController extends Controller
                 $fileprop['project_id'] = $project_id;
                 $filepath = "/storage/app/public/{$status}/{$filename}";
                 $fileprop['path'] = $filepath;
-                $fileprop['created_at'] = date('Y-m-d H:i:s');
-                $fileprop['updated_at'] = date('Y-m-d H:i:s');
                 return Annex::createAnnexes($fileprop, $status);
             }
         } catch (Exception $e) {
@@ -164,8 +162,6 @@ class ProjectController extends Controller
         $projectinfo['discribe'] = $request->ProjectDescription;
         $projectinfo['amdin_user_id'] = Auth::id();
         $projectinfo['pre_url'] = 'null';
-        $projectinfo['created_at'] = date('Y-m-d H:i:s');
-        $projectinfo['updated_at'] = date('Y-m-d H:i:s');
         return $projectinfo;
     }
 

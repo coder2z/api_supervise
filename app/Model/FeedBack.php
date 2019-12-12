@@ -14,7 +14,7 @@ class FeedBack extends Model
     //定义主键
     protected $primaryKey = 'id';
     //定义禁止操作时间
-    public $timestamps = false;
+    public $timestamps = true;
     public static function getInfo_echo($id)
     {
         try
@@ -29,10 +29,7 @@ class FeedBack extends Model
                     "name"=>$json_decode->title,
                     "type"=>$item->broadcast,
                     "from"=>$user["name"],
-//                    "to"=>1,
                     "to"=>"我",
-                    "update_at"=>$item->updated_at,
-                    "create_at"=>$item->created_at
                 );
             }
             return $data;
