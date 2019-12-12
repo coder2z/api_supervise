@@ -11,5 +11,5 @@ class LogTable extends Model
     //定义主键
     protected $primaryKey = '';
     //定义禁止操作时间
-    public $timestamps = false;
+    public $timestamps = true;
 }

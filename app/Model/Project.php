@@ -14,7 +14,7 @@ class Project extends Model
     //定义主键
     protected $primaryKey = 'id';
     //定义禁止操作时间
-    public $timestamps = false;
+    public $timestamps = true;
 
     public static function getAllProjectInfo()
     {
@@ -49,8 +49,6 @@ class Project extends Model
             $project->discribe = $array['discribe'];
             $project->amdin_user_id = $array['amdin_user_id'];
             $project->pre_url = $array['pre_url'];
-            $project->created_at = $array['created_at'];
-            $project->updated_at = $array['updated_at'];
             $result = $project->save();
             return $result ? $project : false;
         } catch (Exception $e) {
