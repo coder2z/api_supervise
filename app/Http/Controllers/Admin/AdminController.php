@@ -9,7 +9,8 @@ use App\Model\User;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Validation\Rule;
-use App\Http\Requests\AddUser;
+use App\Http\Requests\Admin\AddUser;
+use App\Http\Requests\Admin\DeleteUser;
 
 class AdminController extends Controller
 {
@@ -23,7 +24,7 @@ class AdminController extends Controller
     }
 
     //删除用户
-    public function DeleteUser(Request $request){
+    public function DeleteUser(DeleteUser $request){
         $data=User::DeleteUser($request->ID);
         if($data==null){
             return response()->fail(100,'失败','用户不存在');
@@ -41,7 +42,7 @@ class AdminController extends Controller
     }
 
     //获取指定用户信息
-    public function ShowUserInfo(Request $request){
+    public function ShowUserInfo(DeleteUser $request){
         $array=['id','name','access_code','phone_number','email','state'];
         $data=User::ShowUserInfo($request->ID,$array);
         if(isset($data[0]->id)){
@@ -56,8 +57,8 @@ class AdminController extends Controller
         $validator=Validator::make($request->all(),[
             'name'          =>'required|string|max:5',
             'password'      =>'check_password',
-            'access_code'   =>'check_code',
-            'state'         =>'check_state',
+            'access_code'   =>'required|check_code',
+            'state'         =>'required|check_state',
             'phone'         =>['required','digits:11',Rule::unique('users','phone_number')->ignore($request->ID)],
             'email'         =>['required','email',Rule::unique('users','email')->ignore($request->ID)],
         ]);
@@ -72,7 +73,7 @@ class AdminController extends Controller
     if(!$data){
         return response()->fail(100,'失败','修改失败');
     }else{
-        $message=$request->name+'被修改了';
+        $message=$request->name.'被修改了';
         \App\Utils\Logs::logInfo($message,Auth::user());
         return response()->success(200,'成功','修改成功');
     }
@@ -83,7 +84,8 @@ class AdminController extends Controller
         $info=[$request->name,$request->password,$request->phone,$request->email,$request->access_code];
         $data=User::AddUser($info);
         if($data){
-            $message=$request->name+'被增加了';
+            dd($request->name);
+           $message=$request->name.'被增加了';
             \App\Utils\Logs::logInfo($message,Auth::user());
             return response()->success(200,'成功','新增用户成功');
         }else{

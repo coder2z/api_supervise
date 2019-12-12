@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Message\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class FrontEndMsg extends FormRequest
+class DeleteUser extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +26,11 @@ class FrontEndMsg extends FormRequest
     public function rules()
     {
         return [
-            'Content' => 'required',
+            'ID' => 'required|numeric',
         ];
     }
     protected function failedValidation(Validator $validator)
     {
-        throw (new HttpResponseException(response()->fail(422, '参数错误！', $validator->errors()->all(), 422)));
+        throw (new HttpResponseException(response()->fail(422, '参数错误!', $validator->errors()->all(), 422)));
     }
 }
