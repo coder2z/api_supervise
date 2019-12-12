@@ -14,16 +14,13 @@ class ProjectMember extends Model
     //定义主键
     protected $primaryKey = 'id';
     //定义禁止操作时间
-    public $timestamps = false;
+    public $timestamps = true;
 
-    public static function get_Info($name,$argument ,$array = [])//获取project_id相关信息
+    public static function get_Info($name, $argument, $array = [])//获取project_id相关信息
     {
-        try
-        {
-        return $array==null ?  self::where($name,$argument)->get():self::where($name,$argument)->get($array);
-        }
-        catch (Exception $exception)
-        {
+        try {
+            return $array == null ? self::where($name, $argument)->get() : self::where($name, $argument)->get($array);
+        } catch (Exception $exception) {
             Logs::logError('查询项目成员表错误!', [$exception->getMessage()]);
             return null;
         }

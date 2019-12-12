@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Admin;
 
 use Closure;
 use App\Model\User;
 use Illuminate\Support\Facades\Auth;
-class CheckManage
+
+class checkManage
 {
     /**
      * Handle an incoming request.
