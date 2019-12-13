@@ -85,3 +85,10 @@ Route::prefix('Message')->namespace('Message')->group(function () {
     Route::post('FrontEndInterfaceController', 'FrontEndInterfaceController@FrontEndInterfaceController');//前端将信息反馈给后端
     Route::get('viewFeedback ', 'viewFeedback@viewFeedback');//查看反馈信息
 });
+
+//吕永杰
+Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function (){
+    Route::get('membersItem','InviteController@getMembersItem');//查询所有用户
+    Route::get('addMembers','InviteController@addMembers');//添加项目成员
+    Route::post('queryUsers','InviteController@queryUsers');//查询用户
+});
