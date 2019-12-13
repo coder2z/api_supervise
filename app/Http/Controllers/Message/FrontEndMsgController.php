@@ -81,21 +81,7 @@ class FrontEndMsgController extends Controller
     public function MyMessage(Request $request)
     {
         try {
-            //$data= FeedBack::getInfo_echo(Auth::id());
-            $data = FeedBack::getInfo_echo(Auth::id());
-            $res = array("code" => 200, "msg" => "success", "data" => $data);
-            return response()->json($res);
-        } catch (\Exception $exception) {
-            Logs::logError('获取信息出错：', [$exception->getMessage()]);
-            $res = array("code" => 100, "msg" => "获取息出错", "data" => null);
-            return response()->json($res);
-            $data = FeedBack::getInfo_echo(Auth::id());
-            return $data == null ?
-                response()->fail(100, "获取息出错！") :
-                response()->success(200, "获取信息成功！", $data);
-        } catch (\Exception $exception) {
-            Logs::logError('获取信息出错：', [$exception->getMessage()]);
-            return response()->fail(100, "获取息出错！");
+
             $data = FeedBack::getInfo_echo($request->id);
             $res = array("code" => 200, "msg" => "获取信息成功", "data" => $data);
             return response()->json($res);
