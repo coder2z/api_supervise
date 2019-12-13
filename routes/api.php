@@ -73,3 +73,9 @@ Route::prefix('Message')->namespace('Message')->group(function () {
     Route::get('fromMessage', 'BackEndMsgController@fromMessage');//查看我的反馈
     Route::get('toMessage', 'BackEndMsgController@toMessage');//查看发给我的消息
 });
+
+//zhangmaolin
+Route::prefix('Message')->namespace('Message')->group(function () {
+    Route::post('FrontEndInterfaceController', 'FrontEndInterfaceController@FrontEndInterfaceController');//前端将信息反馈给后端
+    Route::get('viewFeedback ', 'viewFeedback@viewFeedback');//查看反馈信息
+});
