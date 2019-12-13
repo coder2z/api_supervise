@@ -26,9 +26,12 @@ class FrontEndMsg extends FormRequest
     public function rules()
     {
         return [
-            'Content' => 'required',
+            'question' => 'required',
+            'title' => 'required',
+            'project_id' => 'required'
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         throw (new HttpResponseException(response()->fail(422, '参数错误！', $validator->errors()->all(), 422)));

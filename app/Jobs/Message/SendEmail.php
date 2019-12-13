@@ -46,6 +46,10 @@ class SendEmail implements ShouldQueue
         }
     }
 
+    /**
+     * @param \Exception $exception
+     * @throws \Exception
+     */
     public function failed(\Exception $exception)
     {
         Logs::logError('发送邮件出现错误!', [$exception->getMessage()]);

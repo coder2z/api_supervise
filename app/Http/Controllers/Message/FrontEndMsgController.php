@@ -55,7 +55,7 @@ class FrontEndMsgController extends Controller
         try {
             $info = $request;
             $data = new FeedBack;
-            $content = [$info->title];
+            $content = [$info->question, $info->title];
             $data->from_user_id = Auth::id();
             $data->to_user_id = 0;//所有人
             $data->interface_id = 0;//所在所有项目
