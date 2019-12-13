@@ -22,6 +22,7 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
     Route::post('registered', 'AuthController@registered'); //用户注册
     Route::post('logout', 'AuthController@logout'); //退出登陆
     Route::post('refresh', 'AuthController@refresh'); //刷新token
+    Route::post('changePassword', 'AuthController@changePassword'); //刷新token
 });
 
 

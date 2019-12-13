@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -218,7 +219,9 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     }
 
     /**
-     * 查询
+     * @param $data
+     * @return mixed
+     * @throws \Exception
      */
     public static function searchUser($data)
     {
@@ -237,5 +240,9 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('搜索失败!', [$e->getMessage()]);
         }
+    }
+
+    public static function updateUserPassword($request){
+        self::where('id',Auth::id())->where('password',$request->)
     }
 }
