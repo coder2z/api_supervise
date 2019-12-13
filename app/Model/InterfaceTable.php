@@ -14,7 +14,6 @@ class InterfaceTable extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
-
     public function getQueueableRelations()
     {
         // TODO: Implement getQueueableRelations() method.

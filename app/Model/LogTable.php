@@ -33,4 +33,5 @@ class LogTable extends Model
     {
         // TODO: Implement getQueueableRelations() method.
     }
+
 }

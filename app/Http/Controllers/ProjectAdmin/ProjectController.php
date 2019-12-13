@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+<<<<<<< HEAD
     public function getAllProject()
     {
         $projectInfo = Project::getAllProjectInfo();
@@ -26,6 +27,25 @@ class ProjectController extends Controller
         }
     }
 
+=======
+    /**
+     * @return mixed
+     * @throws Exception
+     */
+    public function getAllProject()
+    {
+        $projectInfo = Project::getMeAllProjectInfo();
+        return $projectInfo !== null ?
+            response()->success(200, '获取全部信息成功', $projectInfo) :
+            response()->fail(100, '获取全部信息失败', $projectInfo);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     public function getProject($id)
     {
         if ($id <= 0) {
@@ -42,6 +62,15 @@ class ProjectController extends Controller
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param getProjectRequest $request
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     public function setProject(getProjectRequest $request, $id)
     {
         if ($id <= 0) {
@@ -71,6 +100,14 @@ class ProjectController extends Controller
         return response()->success(200, '更新成功', null);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param getProjectRequest $request
+     * @return mixed
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     public function addProject(getProjectRequest $request)
     {
         // $adminid = User::find(1);
@@ -90,6 +127,14 @@ class ProjectController extends Controller
         return response()->success(200, '添加成功', null);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     public function deleteProject($id)
     {
         if ($id <= 0) {
@@ -122,6 +167,16 @@ class ProjectController extends Controller
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param $file
+     * @param $status
+     * @param $project_id
+     * @return bool
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     private function upload($file, $status, $project_id)
     {
         try {
@@ -151,11 +206,25 @@ class ProjectController extends Controller
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param $id
+     * @return bool
+     */
+>>>>>>> myxy99/master
     private function CheckAdminId($id)
     {
         return $id->access_code == -1 ? true : false;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param $request
+     * @return mixed
+     */
+>>>>>>> myxy99/master
     private function projectHandle($request)
     {
         $projectinfo['name'] = $request->ProjectName;
@@ -165,6 +234,15 @@ class ProjectController extends Controller
         return $projectinfo;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * @param $filename
+     * @param $status
+     * @return bool
+     * @throws Exception
+     */
+>>>>>>> myxy99/master
     private function deleteAnnex($filename, $status)
     {
         try {

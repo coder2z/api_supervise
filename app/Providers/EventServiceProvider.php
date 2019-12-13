@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+<<<<<<< HEAD
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+=======
+use App\Model\InterfaceTable;
+use App\Observers\InterfaceTableObserver;
+>>>>>>> myxy99/master
 use Illuminate\Support\Facades\Event;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -31,8 +36,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        parent::boot();
+//        InterfaceTable::observe(InterfaceTableObserver::class);
 
-        //
+//        parent::boot();
+//
+//        InterfaceTable::observe(InterfaceTableObserver::class);
     }
 }
