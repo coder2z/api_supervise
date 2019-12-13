@@ -11,15 +11,11 @@ class Position extends Model
     //定义主键
     protected $primaryKey = '';
     //定义禁止操作时间
-<<<<<<< HEAD
-    public $timestamps = false;
-    protected $dispatchesEvents=[
+    protected $dispatchesEvents = [
         'saved' => UserSaved::class,
         'deleted' => UserDeleted::class,
     ];
-=======
     public $timestamps = true;
->>>>>>> d53a4e25a6c04ca0a85a60586a01e6d74b522fd1
     /**
      * 设置批量赋值
      *
@@ -30,11 +26,12 @@ class Position extends Model
     /**
      * @param $userID
      */
-    public static function checkPosition($userID){
-        $positions=array();
-        $position=self::where('user_id',$userID)->get(['position_code']);
-        foreach ($position as $item){
-            $positions[] =$item->position_code;
+    public static function checkPosition($userID)
+    {
+        $positions = array();
+        $position = self::where('user_id', $userID)->get(['position_code']);
+        foreach ($position as $item) {
+            $positions[] = $item->position_code;
         };
         return $positions;
     }

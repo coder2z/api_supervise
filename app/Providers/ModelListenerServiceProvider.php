@@ -19,9 +19,7 @@ class ModelListenerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //User模型的观察者
         User::observe(UserObserver::class);
-//        Position::observe(PositionObserver::class);
         InterfaceTable::observe(InterfaceTableObserver::class);
     }
 }

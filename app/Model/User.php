@@ -243,6 +243,6 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     }
 
     public static function updateUserPassword($request){
-        self::where('id',Auth::id())->where('password',$request->)
+//        self::where('id',Auth::id())->where('password',$request->)
     }
 }

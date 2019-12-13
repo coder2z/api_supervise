@@ -72,8 +72,4 @@ Route::prefix('Message')->namespace('Message')->group(function (){
     Route::get('fromMessage','BackEndMsgController@fromMessage');
     Route::get('toMessage','BackEndMsgController@toMessage');
     Route::post('monitor','BackEndMsgController@monitor');
-    Route::get('test','BackEndMsgController@test');
-    Route::post('test1','BackEndMsgController@test1');
-
-
 });
