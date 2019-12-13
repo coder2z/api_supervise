@@ -12,4 +12,10 @@ class Position extends Model
     protected $primaryKey = '';
     //定义禁止操作时间
     public $timestamps = false;
+    /**
+     * 设置批量赋值
+     *
+     * @var array
+     */
+    protected $guarded = [];
 }

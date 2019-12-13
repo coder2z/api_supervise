@@ -14,10 +14,15 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('oAuth')->namespace('OAuth')->group(function (){
-    Route::post('login','AuthController@login');//登陆
-    Route::post('info','AuthController@info');//获取用户信息
-    Route::post('registered','AuthController@registered');//用户注册
-    Route::post('logout','AuthController@logout');//退出登陆
-    Route::post('refresh','AuthController@refresh');//刷新token
+Route::prefix('oAuth')->namespace('OAuth')->group(function () {
+    Route::post('login', 'AuthController@login');//登陆
+    Route::post('info', 'AuthController@info');//获取用户信息
+    Route::post('registered', 'AuthController@registered');//用户注册
+    Route::post('logout', 'AuthController@logout');//退出登陆
+    Route::post('refresh', 'AuthController@refresh');//刷新token
 });
+
+//魏子超
+Route::get('logs', 'Logs\LogController@logs');
+
+Route::post('test','Logs\TestController@test');
