@@ -12,4 +12,7 @@ class FeedBack extends Model
     protected $primaryKey = '';
     //定义禁止操作时间
     public $timestamps = false;
+    protected $casts = [
+        'content' => 'json', // 声明json类型
+    ];
 }

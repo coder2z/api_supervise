@@ -12,6 +12,10 @@ class Position extends Model
     protected $primaryKey = '';
     //定义禁止操作时间
     public $timestamps = false;
+    protected $dispatchesEvents=[
+        'saved' => UserSaved::class,
+        'deleted' => UserDeleted::class,
+    ];
     /**
      * 设置批量赋值
      *
