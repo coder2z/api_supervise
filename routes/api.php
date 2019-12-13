@@ -67,3 +67,13 @@ Route::namespace('Admin')->group(function () {
     Route::post('UpdateUserInfo', 'AdminController@UpdateUserInfo')->middleware('manage');//修改用户信息
     Route::post('AddUser', 'AdminController@AddUser')->middleware('manage');//新增用户信息
 });
+Route::prefix('Message')->namespace('Message')->group(function (){
+    Route::get('showMessage','BackEndMsgController@showMessage');
+    Route::get('fromMessage','BackEndMsgController@fromMessage');
+    Route::get('toMessage','BackEndMsgController@toMessage');
+    Route::post('monitor','BackEndMsgController@monitor');
+    Route::get('test','BackEndMsgController@test');
+    Route::post('test1','BackEndMsgController@test1');
+
+
+});

@@ -14,6 +14,12 @@ class FeedBack extends Model
     //定义主键
     protected $primaryKey = 'id';
     //定义禁止操作时间
+<<<<<<< HEAD
+    public $timestamps = false;
+    protected $casts = [
+        'content' => 'json', // 声明json类型
+    ];
+=======
     public $timestamps = true;
 
     /**
@@ -46,4 +52,5 @@ class FeedBack extends Model
         }
 
     }
+>>>>>>> d53a4e25a6c04ca0a85a60586a01e6d74b522fd1
 }
