@@ -18,6 +18,9 @@ class CreateErrorsTable extends Migration
             $table->integer('error_code')->unsigned();
             $table->text('error_info');
             $table->integer('http_code')->unsigned();
+            $table->integer('project_id')->unsigned()->comment('外键projects表主键id,设置restrict');
+            $table->foreign('project_id')//外键projects表主键id,设置restrict
+            ->references('id')->on('projects');
             $table->timestamps();
         });
     }
