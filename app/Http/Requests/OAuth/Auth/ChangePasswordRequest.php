@@ -3,6 +3,8 @@
 namespace App\Http\Requests\OAuth\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ChangePasswordRequest extends FormRequest
 {
@@ -25,8 +27,15 @@ class ChangePasswordRequest extends FormRequest
     {
         return [
             'old_password' => 'required|between:6,16|string',
-            'new_password' => 'required|between:6,16|string',
+            'new_password' => 'required|between:6,16|string|confirmed',
             'new_password_confirmation' => 'required|between:6,16|string'
         ];
+    }
+    /**
+     * @param Validator $validator
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw (new HttpResponseException(response()->fail(422, '参数错误!', $validator->errors()->all(), 422)));
     }
 }

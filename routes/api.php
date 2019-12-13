@@ -22,7 +22,7 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
     Route::post('registered', 'AuthController@registered'); //用户注册
     Route::post('logout', 'AuthController@logout'); //退出登陆
     Route::post('refresh', 'AuthController@refresh'); //刷新token
-    Route::post('changePassword', 'AuthController@changePassword'); //刷新token
+    Route::post('changePassword', 'AuthController@changePassword');//修改密码
 });
 
 
@@ -67,9 +67,10 @@ Route::namespace('Admin')->group(function () {
     Route::post('UpdateUserInfo', 'AdminController@UpdateUserInfo')->middleware('manage');//修改用户信息
     Route::post('AddUser', 'AdminController@AddUser')->middleware('manage');//新增用户信息
 });
-Route::prefix('Message')->namespace('Message')->group(function (){
-    Route::get('showMessage','BackEndMsgController@showMessage');
-    Route::get('fromMessage','BackEndMsgController@fromMessage');
-    Route::get('toMessage','BackEndMsgController@toMessage');
-    Route::post('monitor','BackEndMsgController@monitor');
+
+Route::prefix('Message')->namespace('Message')->group(function () {
+    Route::get('showMessage', 'BackEndMsgController@showMessage');
+    Route::get('fromMessage', 'BackEndMsgController@fromMessage');
+    Route::get('toMessage', 'BackEndMsgController@toMessage');
+    Route::post('monitor', 'BackEndMsgController@monitor');
 });

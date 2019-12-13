@@ -110,10 +110,11 @@ class AuthController extends Controller
     }
 
 
-    public function changePassword(ChangePasswordRequest $request){
-        return User::updateUserPassword($request) ?
-            response()->success(200, '修改密码成功!') :
-            response()->fail(100, '修改密码成功!');
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        return !User::updateUserPassword($request) ?
+            response()->fail(100, '修改密码失败！请检查原密码！') :
+            response()->success(200, '修改密码成功！');
     }
 
     /**

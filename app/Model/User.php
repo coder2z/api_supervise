@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -127,10 +128,12 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->join('positions as t4', 't1.id', 't4.user_id')
                 ->select('t1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
                 ->paginate(4);
+            return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
+            return null;
         }
-        return $res;
+
     }
 
     /**
@@ -170,6 +173,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('修改人员失败!', [$e->getMessage()]);
+            return 0;
         }
     }
 
@@ -195,6 +199,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $data;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('移除人员失败!', [$e->getMessage()]);
+            return 0;
         }
     }
 
@@ -215,6 +220,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取人员失败!', [$e->getMessage()]);
+            return null;
         }
     }
 
@@ -239,10 +245,45 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('搜索失败!', [$e->getMessage()]);
+            return null;
         }
     }
 
-    public static function updateUserPassword($request){
-//        self::where('id',Auth::id())->where('password',$request->)
+    /**
+     * 修改用户密码
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
+    public static function updateUserPassword($request)
+    {
+        try {
+            if (self::checkOldPassword($request->old_password)) {
+                return self::where('id', Auth::id())->update(['password' => bcrypt($request->new_password)]) ?
+                    true :
+                    false;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('修改密码发生错误!', [$e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * 检查用户原密码
+     * @param $old_password
+     * @return mixed
+     * @throws \Exception
+     */
+    protected static function checkOldPassword($old_password)
+    {
+        try {
+            return Hash::check($old_password, self::where('id', Auth::id())->first()->password);
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('检查用户原密码发生错误!', [$e->getMessage()]);
+            return false;
+        }
     }
 }
