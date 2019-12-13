@@ -55,7 +55,7 @@ Route::namespace('Admin')->group(function () {
 });
 //
 //倪煜
-Route::get("/MyMessage", "Message\FrontEndMsgController@MyMessage");//获取反馈信息列表
+Route::get("/MyMessage/{id}", "Message\FrontEndMsgController@MyMessage");//获取相关项目反馈信息列表{id}：项目id
 Route::get("/SendMail_All_Back", "Message\FrontEndMsgController@SendMail_All_Back");//前端增加所在项目反馈信息并发送邮件（项目全部后端）
 //qiu
 Route::namespace('Admin')->group(function () {

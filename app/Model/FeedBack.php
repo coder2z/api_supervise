@@ -26,24 +26,38 @@ class FeedBack extends Model
         try {
             $data = array();
             $i = 0;
-            $info = self::where("to_user_id", $id)->get();
-            foreach ($info as $item) {
-                $user = User::find($item->from_user_id);
-                if ($user == null) $user["name"] = "用户已注销";
-                $json_decode = json_decode($item->content);
-                $data[$i++] = array(
-                    "name" => $json_decode->title,
-                    "type" => $item->broadcast,
-                    "from" => $user["name"],
-                    "to" => "我",
-                );
+            $status=self::verify();
+            if($status)
+            {
+                $info = self::where("project_id", $id)->where(function ($query){
+                    $query->where("to_user_id",Auth::id())->orWhere(function ($query){ $query->where("to_user_id",0);});
+                })
+                    ->paginate(10);
+                foreach ($info as $item) {
+                    $user = User::find($item->from_user_id);
+                    if ($user == null) $user["name"] = "用户已注销";
+                    $json_decode = json_decode($item->content);
+                    $data[$i++] = array(
+                        "name" => $json_decode->title,
+                        "type" => $json_decode->type,
+                        "from" => $user["name"],
+                        "to" => "我",
+                        "created_at"=>$item->created_at,
+                        "updated_at"=>$item->updated_at,
+                    );
+                }
+                return $data;
             }
-            return $data;
+            else return null;
         } catch (\Exception $exception) {
             Logs::logError('获取反馈信息出错：', [$exception->getMessage()]);
             $res = array("code" => 100, "msg" => "false", "data" => "获取反馈信息出错");
             return response()->json($res);
         }
 
+    }
+    public static function verify()
+    {
+        return Auth::id()!=null ? Auth::id() : false;
     }
 }
