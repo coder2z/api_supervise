@@ -15,6 +15,12 @@ class Annex extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
+    /**
+     * @param array $array
+     * @param $status
+     * @return bool
+     * @throws Exception
+     */
     public static function createAnnexes($array = [], $status)
     {
         try {
@@ -28,6 +34,12 @@ class Annex extends Model
         }
     }
 
+    /**
+     * @param $id
+     * @param $type
+     * @return bool|string
+     * @throws Exception
+     */
     public static function FindAnnexPath($id, $type)
     {
         try {

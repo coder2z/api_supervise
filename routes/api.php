@@ -36,9 +36,9 @@ Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
     Route::post('searchUser', 'UserController@searchUser');//搜索人员
 });
 
-//yikang
+//易康
 Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
-    Route::get('getAllProject', 'ProjectController@getAllProject'); //获取全部项目信息
+    Route::get('getAllProject', 'ProjectController@getAllProject'); //项目管理员获取全部项目信息
     Route::get('getProject/{id}', 'ProjectController@getProject'); //获取指定{id}项目信息
     Route::post('setProject/{id}', 'ProjectController@setProject'); //修改项目
     Route::post('addProject', 'ProjectController@addProject'); //添加项目

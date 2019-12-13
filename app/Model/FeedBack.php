@@ -44,8 +44,7 @@ class FeedBack extends Model
             return $data;
         } catch (\Exception $exception) {
             Logs::logError('获取反馈信息出错：', [$exception->getMessage()]);
-            $res = array("code" => 100, "msg" => "false", "data" => "获取反馈信息出错");
-            return response()->json($res);
+            return null;
         }
     }
 }

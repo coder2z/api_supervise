@@ -16,16 +16,28 @@ class Project extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
-    public static function getAllProjectInfo()
+    /**
+     * @return |null
+     * @throws Exception
+     */
+    public static function getMeAllProjectInfo()
     {
         try {
-            return self::orderBy('updated_at', 'desc')->select('name', 'discribe')->paginate(12);
+            return self::orderBy('updated_at', 'desc')
+                ->select('id', 'name', 'discribe')
+                ->where('amdin_user_id', auth()->id())
+                ->paginate(env('PAGE_NUM'));
         } catch (Exception $e) {
             Logs::logError('查询全部项目信息失败！', [$e->getMessage()]);
             return null;
         }
     }
 
+    /**
+     * @param $id
+     * @return |null
+     * @throws Exception
+     */
     public static function getProjectInfo($id)
     {
         try {
@@ -41,6 +53,12 @@ class Project extends Model
         }
     }
 
+
+    /**
+     * @param array $array
+     * @return Project|bool
+     * @throws Exception
+     */
     public static function createProject($array = [])
     {
         try {
@@ -57,6 +75,12 @@ class Project extends Model
         }
     }
 
+    /**
+     * @param array $array
+     * @param $id
+     * @return bool
+     * @throws Exception
+     */
     public static function updateProject($array = [], $id)
     {
         try {
@@ -74,6 +98,12 @@ class Project extends Model
         }
     }
 
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws Exception
+     */
     public static function destroyProject($id)
     {
         try {

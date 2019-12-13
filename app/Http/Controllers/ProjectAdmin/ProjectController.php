@@ -14,18 +14,23 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getAllProject()
     {
-        $projectInfo = Project::getAllProjectInfo();
-        if ($projectInfo !== null) {
-            Logs::logInfo('获取全部信息成功');
-            return response()->success(200, '获取全部信息成功', $projectInfo);
-        } else {
-            Logs::logError('获取全部信息失败');
-            return response()->fail(100, '获取全部信息失败', $projectInfo);
-        }
+        $projectInfo = Project::getMeAllProjectInfo();
+        return $projectInfo !== null ?
+            response()->success(200, '获取全部信息成功', $projectInfo) :
+            response()->fail(100, '获取全部信息失败', $projectInfo);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function getProject($id)
     {
         if ($id <= 0) {
@@ -42,6 +47,12 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * @param getProjectRequest $request
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function setProject(getProjectRequest $request, $id)
     {
         if ($id <= 0) {
@@ -71,6 +82,11 @@ class ProjectController extends Controller
         return response()->success(200, '更新成功', null);
     }
 
+    /**
+     * @param getProjectRequest $request
+     * @return mixed
+     * @throws Exception
+     */
     public function addProject(getProjectRequest $request)
     {
         // $adminid = User::find(1);
@@ -90,6 +106,11 @@ class ProjectController extends Controller
         return response()->success(200, '添加成功', null);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function deleteProject($id)
     {
         if ($id <= 0) {
@@ -122,6 +143,13 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * @param $file
+     * @param $status
+     * @param $project_id
+     * @return bool
+     * @throws Exception
+     */
     private function upload($file, $status, $project_id)
     {
         try {
@@ -151,11 +179,19 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     private function CheckAdminId($id)
     {
         return $id->access_code == -1 ? true : false;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     */
     private function projectHandle($request)
     {
         $projectinfo['name'] = $request->ProjectName;
@@ -165,6 +201,12 @@ class ProjectController extends Controller
         return $projectinfo;
     }
 
+    /**
+     * @param $filename
+     * @param $status
+     * @return bool
+     * @throws Exception
+     */
     private function deleteAnnex($filename, $status)
     {
         try {

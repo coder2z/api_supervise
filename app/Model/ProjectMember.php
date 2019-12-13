@@ -24,7 +24,9 @@ class ProjectMember extends Model
     public static function get_Info($name, $argument, $array = [])//获取project_id相关信息
     {
         try {
-            return $array == null ? self::where($name, $argument)->get() : self::where($name, $argument)->get($array);
+            return $array == null ?
+                self::where($name, $argument)->get() :
+                self::where($name, $argument)->get($array);
         } catch (\Exception $exception) {
             Logs::logError('查询项目成员表错误!', [$exception->getMessage()]);
             return null;
