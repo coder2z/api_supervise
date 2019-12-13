@@ -32,4 +32,26 @@ class ProjectMember extends Model
             return null;
         }
     }
+
+    public static function addMembers($userid=[],$itemid)
+    {
+        try {
+            foreach ($userid as $key => $u_id){
+                if(self::where('project_id',(int)$itemid)->where('user_id',(int)$u_id)->first()){
+                    continue;
+                }
+                $user = User::where('id',(int)$u_id)->first();
+                $Puser = new ProjectMember();
+                $Puser -> project_id = $itemid;
+                $Puser -> user_id = $user -> id;
+                $Puser -> type = 0;
+                $Puser -> created_at = date('Y-m-d H:i:s',time());
+                $Puser -> save();
+            }
+            return true;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('添加用户失败!', [$e->getMessage()]);
+            return false;
+        }
+    }
 }

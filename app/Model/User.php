@@ -286,4 +286,38 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return false;
         }
     }
+
+    /*
+     * 模糊查询
+     * */
+    public static  function queryUsers($str){
+        try{
+            $data = self::where('name','like','%'.$str.'%')
+                ->orwhere('phone_number','like','%'.$str.'%')
+                ->orwhere('email','like','%'.$str.'%')->paginate(8);
+            return $data;
+        }catch (Exception $e){
+            \App\Utils\Logs::logError('查询用户失败!', [$e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * 查询用户
+     *
+     */
+    public static function selectUser()
+    {
+        try {
+            $user = self::orderBy('id','desc')->where('state',0)->paginate(8);
+            $item = Project::all();
+            $data = new class{};
+            $data->user = $user;
+            $data->item = $item;
+            return $data;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('添加用户失败!', [$e->getMessage()]);
+            return false;
+        }
+    }
 }
