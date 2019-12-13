@@ -38,7 +38,7 @@ class FeedBack extends Model
                     "name" => $json_decode->title,
                     "type" => $item->broadcast,
                     "from" => $user["name"],
-                    "to" => "我",
+                    "to" => auth()->user()->name,
                 );
             }
             return $data;

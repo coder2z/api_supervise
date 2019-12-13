@@ -31,7 +31,7 @@ class Project extends Model
     public function getQueueableRelations()
     {
         // TODO: Implement getQueueableRelations() method.
-
+    }
     /**
      * @return |null
      * @throws Exception
