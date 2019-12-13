@@ -2,8 +2,11 @@
 
 namespace App\Model;
 
+
+use Illuminate\Contracts\Auth\Guard;
 use App\Utils\Logs;
 use Exception;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +19,19 @@ class Project extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
+
+
+    /**
+     * Get the relationships for the entity.
+     *
+     * @return array
+     */
+
+
+    public function getQueueableRelations()
+    {
+        // TODO: Implement getQueueableRelations() method.
+    }
     /**
      * @return |null
      * @throws Exception

@@ -161,6 +161,8 @@ class AuthController extends Controller
     {
         $registeredInfo = $request->except('password_confirmation');
         $registeredInfo['password'] = bcrypt($registeredInfo['password']);
+        $registeredInfo['created_at'] = date("Y-m-d H:i:s");
+        $registeredInfo['updated_at'] = date("Y-m-d H:i:s");
         return $registeredInfo;
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Events\Event;
 
 class InterfaceTable extends Model
 {
@@ -12,4 +13,11 @@ class InterfaceTable extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
+
+    public function getQueueableRelations()
+    {
+        // TODO: Implement getQueueableRelations() method.
+    }
 }
+
+

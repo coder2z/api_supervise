@@ -14,6 +14,18 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+//    public function getAllProject()
+//    {
+//        $projectInfo = Project::getAllProjectInfo();
+//        if ($projectInfo !== null) {
+//            Logs::logInfo('获取全部信息成功');
+//            return response()->success(200, '获取全部信息成功', $projectInfo);
+//        } else {
+//            Logs::logError('获取全部信息失败');
+//            return response()->fail(100, '获取全部信息失败', $projectInfo);
+//        }
+//    }
+
     /**
      * @return mixed
      * @throws Exception

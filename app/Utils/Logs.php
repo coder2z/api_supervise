@@ -66,10 +66,7 @@ class Logs
      * @param string $isType
      * @throws \Exception
      */
-    public static function logInfo($message, $data = null, $filename = 'info', $isDate = true, $isType = 'info')
-    {
-        self::_save($message, $data, $filename, $isDate, $isType);
-    }
+
 
     /**
      * @param $message

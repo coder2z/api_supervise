@@ -11,6 +11,8 @@ class Position extends Model
     //定义主键
     protected $primaryKey = '';
     //定义禁止操作时间
+
+
     protected $dispatchesEvents = [
         'saved' => UserSaved::class,
         'deleted' => UserDeleted::class,
@@ -22,6 +24,7 @@ class Position extends Model
      * @var array
      */
     protected $guarded = [];
+
 
     /**
      * @param $userID
