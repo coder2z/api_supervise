@@ -78,7 +78,7 @@ class FrontEndMsgController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function MyMessages(Request $request)
+    public function MyMessage(Request $request)
     {
         try {
             $data = FeedBack::getInfo_echo($request->id);
