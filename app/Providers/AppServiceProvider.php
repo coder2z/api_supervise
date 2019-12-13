@@ -17,8 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-<<<<<<< HEAD
-=======
+
         //
         Validator::extend('check_password', function ($attribute, $value,$parameters, $validator) {
             if($value==null){
@@ -46,7 +45,6 @@ class AppServiceProvider extends ServiceProvider
                 return false;
             }
         });
->>>>>>> myxy99/master
 
     }
 

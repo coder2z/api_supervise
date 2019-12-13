@@ -7,6 +7,7 @@ use App\Jobs\Message\SendEmail;
 use App\Model\ProjectMember;
 use App\Model\User;
 use App\Utils\Logs;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Model\FeedBack;
 use App\Http\Controllers\Controller;
@@ -20,21 +21,15 @@ class FrontEndMsgController extends Controller
      * @return bool
      * @throws \Exception
      */
-    public function SendMail($id = [], $Info)
+    public function SendMail($id , $Info)
     {
         try {
-            $x = 0;
-            $members_array = [];
-            foreach ($id as $project_id) {
-                $members_array[$x++] = ProjectMember::get_Info("project_id", $project_id, ["user_id"]);
-            }
+            $members_array = ProjectMember::get_Info("project_id", $id, ["user_id"]);
             $users = null;
             $i = 0;
-            foreach ($members_array as $members) {
-                foreach ($members as $member) {
-                    $user = User::getUserInfo($member->user_id, ["email"])->toArray();//collection->array
-                    $users[$i++] = $user[0]["email"];
-                }
+            foreach ($members_array as $member) {
+                $user = User::getUserInfo($member->user_id, ["email"])->toArray();//collection->array
+                $users[$i++] = $user[0]["email"];
             }
             $users = Array_unique($users);
             $this->dispatch(new SendEmail($users, $Info));
@@ -44,7 +39,6 @@ class FrontEndMsgController extends Controller
             return false;
         }
     }
-
     /**
      * @param FrontEndMsg $request
      * @return \Illuminate\Http\JsonResponse
@@ -55,19 +49,15 @@ class FrontEndMsgController extends Controller
         try {
             $info = $request;
             $data = new FeedBack;
-            $content = [$info->question, $info->title];
-            $data->from_user_id = Auth::id();
+            $content = ["type"=>"前端反馈","title"=>$info->title,"question"=> $info->question,];
+            $data->from_user_id =Auth::id();
             $data->to_user_id = 0;//所有人
-            $data->interface_id = 0;//所在所有项目
+            $data->interface_id = 0;//不面向任何接口
+            $data->project_id = $info->project_id;//所在项目
             $data->broadcast = 1;//广播 0（前端） 1（后端） -1（所有）
             $data->content = json_encode($content);
             $data->save();
-            $project_ids = ProjectMember::get_Info("user_id", Auth::id(), ["project_id"]);
-            $project_id = [];
-            foreach ($project_ids as $item) {
-                Array_push($project_id, $item->project_id);
-            }
-            if ($this->SendMail($project_id, $content)) {
+            if ($this->SendMail($info->project_id, $content)) {
                 $res = array("code" => 200, "msg" => "邮件已进入队列，正等待处理", "data" => null);
                 return response()->json($res);
             } else {
@@ -88,10 +78,9 @@ class FrontEndMsgController extends Controller
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function MyMessage()
+    public function MyMessage(Request $request)
     {
         try {
-<<<<<<< HEAD
             //$data= FeedBack::getInfo_echo(Auth::id());
             $data = FeedBack::getInfo_echo(Auth::id());
             $res = array("code" => 200, "msg" => "success", "data" => $data);
@@ -100,7 +89,6 @@ class FrontEndMsgController extends Controller
             Logs::logError('获取信息出错：', [$exception->getMessage()]);
             $res = array("code" => 100, "msg" => "获取息出错", "data" => null);
             return response()->json($res);
-=======
             $data = FeedBack::getInfo_echo(Auth::id());
             return $data == null ?
                 response()->fail(100, "获取息出错！") :
@@ -108,7 +96,13 @@ class FrontEndMsgController extends Controller
         } catch (\Exception $exception) {
             Logs::logError('获取信息出错：', [$exception->getMessage()]);
             return response()->fail(100, "获取息出错！");
->>>>>>> myxy99/master
+            $data = FeedBack::getInfo_echo($request->id);
+            $res = array("code" => 200, "msg" => "获取信息成功", "data" => $data);
+            return response()->json($res);
+        } catch (\Exception $exception) {
+            Logs::logError('获取信息出错：', [$exception->getMessage()]);
+            $res = array("code" => 100, "msg" => "获取信息失败", "data" => null);
+            return response()->json($res);
         }
     }
 }
