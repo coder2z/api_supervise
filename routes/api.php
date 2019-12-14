@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /** @noinspection PhpParamsInspection */
 
@@ -23,10 +23,6 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
     Route::post('logout', 'AuthController@logout'); //退出登陆
     Route::post('refresh', 'AuthController@refresh'); //刷新token
 });
-
-Route::get('/ProjectAdmin/getWord','ProjectAdmin\WordController@getWord');
-
-Route::any('/ProjectAdmin/test','ProjectAdmin\WordController@Test');
 
 
 //zhengruyuan

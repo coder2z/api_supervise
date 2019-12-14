@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\ProjectAdmin;
 
+use App\Model\Error;
+use App\Model\InterfaceTable;
+use App\Model\ProjectModule;
+use App\Model\RequestTable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpWord\PhpWord;
 
 class WordController extends Controller
@@ -46,11 +51,11 @@ class WordController extends Controller
         $applicationTitle = "应用返回数据层级";
         //数据层级信息
         $applicationMess = array(
-                'data'=>'应用数据',
-                'msg'=>'应用信息',
-                'code'=>'状态码',
-                '200'=>'成功'
-            );
+            'data'=>'应用数据',
+            'msg'=>'应用信息',
+            'code'=>'状态码',
+            '200'=>'成功'
+        );
         //模块标题
         $moduleTitle = [
             "管理员模块",
@@ -88,7 +93,7 @@ class WordController extends Controller
         $retErrorMsg = array('code' => 100, 'msg' =>'失败', 'data' => '失败信息！');
         $retSuccesMsg =array('code' => 100, 'msg' =>'失败', 'data' => array('信息1'=>'信息1显示','信息2'=>'信息2显示'));
         $arr = array('status' => true,'errMsg' => '错误了','member' =>array(array('name' => '李逍遥','gender' => '男'),array('name' => '赵灵儿','gender' => '女')));
-        $switchJson = json_encode($arr, JSON_UNESCAPED_UNICODE);
+        $switchJson = json_encode($arr,JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT |JSON_UNESCAPED_SLASHES);
         $testMsg ="{\"msg\": \"成功\",\"code\": 200,\"data\":{\"current_page\": 1,\"user\":[{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},{\"id\": \"用户Id\",\"name\": \"姓名\",\"phone_number\": \"手机号\",\"email\": \"邮箱\",},],\"first_page_url\": \"http://www.api.com/UserItem/0?page=1\",\"from\": 1,\"last_page\": 3,\"last_page_url\": \"http://www.api.com/UserItem/0?page=3\",\"next_page_url\": \"http://www.api.com/UserItem/0?page=2\",\"path\": \"http://www.api.com/UserItem/0\",\"per_page\": 8,\"prev_page_url\": null,\"to\": 8,\"total\": 18,\"item\":[{\"id\": \"项目Id\",\"name\": \"项目名\",},{\"id\": \"项目Id\",\"name\": \"项目名\",},{\"id\": \"项目Id\",\"name\": \"项目名\",},]}}";
         $metFun = "导出项目接口文档";
         substr($metFun,0,1);
@@ -134,7 +139,7 @@ class WordController extends Controller
         $table->addCell(2000)->addText("失败返回示例",$fontStylebold);
         $cell1 = $table->addCell(6000,array('gridSpan' => 3));
         $celltext = $cell1->addTextRun($paragraphStyleName);
-        foreach ($this->mb_str_split($testMsg) as $key){
+        foreach ($this->mb_str_split($switchJson) as $key){
             if ($key == '['){
                 do{
                     $celltext->addText($key, $fontStyle);
@@ -161,45 +166,6 @@ class WordController extends Controller
                 $celltext->addText($key,$fontStyle);
             }
         }
-//        $celltext->addText("{",$fontStyle);
-//        $celltext->addTextBreak();
-//        $celltext->addText("    ",$fontStyle);
-//        foreach ($retSuccesMsg as $key1 => $vaule1) {
-//            if(is_array($vaule1)){
-//                $celltext->addText("{",$fontStyle);
-//                $celltext->addText("[",$fontStyle);
-//                $celltext->addTextBreak();
-//                $celltext->addText("    ",$fontStyle);
-//                foreach ($vaule1 as $key2 => $vaule2){
-//                    $celltext->addText("{",$fontStyle);
-//                    $celltext->addTextBreak();
-//                    $celltext->addText("\"", $fontStyle);
-//                    $celltext->addText($key2, $fontStyle);
-//                    $celltext->addText("\"", $fontStyle);
-//                    $celltext->addText(":", $fontStyle);
-//                    $celltext->addText("\"", $fontStyle);
-//                    $celltext->addText($vaule2, $fontStyle);
-//                    $celltext->addText("\"", $fontStyle);
-//                    $celltext->addText(",", $fontStyle);
-//                    $celltext->addTextBreak();
-//                    $celltext->addText("}",$fontStyle);
-//                    $celltext->addTextBreak();
-//                }
-//                $celltext->addText("]",$fontStyle);
-//                $celltext->addText("}",$fontStyle);
-//            }
-//                $celltext->addText("\"", $fontStyle);
-//                $celltext->addText($key1, $fontStyle);
-//                $celltext->addText("\"", $fontStyle);
-//                $celltext->addText(":", $fontStyle);
-//                $celltext->addText("\"", $fontStyle);
-//                $celltext->addText($vaule1, $fontStyle);
-//                $celltext->addText("\"", $fontStyle);
-//                $celltext->addText(",", $fontStyle);
-//                $celltext->addTextBreak();
-//
-//        }
-//        $celltext->addText("}",$fontStyle);
         $filename = $titile.".docx";
         header("Content-Description: File Transfer");
         header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -209,6 +175,50 @@ class WordController extends Controller
         header('Expires: 0');
         $xmlWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpword, 'Word2007');
         $xmlWriter->save("php://output");
+    }
+
+    //获取所有的模型名
+    public function findModules(){
+        $project_id = 1;
+        $result = ProjectModule::where('project_id',$project_id)->select('id','project_id','modules_name','class_name','full_class_name','utility')->get();
+        return $result;
+    }
+
+    //获取模型对应的所有方法名
+    public function findModulesAllMet(){
+        $module_id = 1;
+        $result = InterfaceTable::where('module_id',$module_id)
+            ->where('state',1)
+            ->select('id as interface_id','interface_name')->get();
+        return $result;
+    }
+
+    //获取错误全部错误码
+    public function getStatusCode(){
+        $project_id = 1;
+        $result = Error::where('project_id',$project_id)->select('id','error_code','error_info','http_code')->get();
+        return $result;
+    }
+
+    //获取接口详情
+    public function getInfterfaceInfo(){
+        $interface_id = 1;
+        $result = InterfaceTable::where('id',$interface_id)->select('id','interface_name','function_name','route_path')
+            ->where('state',1)
+            ->get();
+        return $result;
+    }
+
+//$result = DB::table('interface_tables')
+//            ->join('request_tables','interface_tables.id','interface_tables.interface_id')
+//            ->join('response_tables','interface_tables.id','response_tables.interface_id')
+//            ->select('interface_tables.id','interface_tables.function_name','interface_tables.interface_name',)
+
+    //获取接口的请求表信息
+    public function getInterfaceRequestMsg(){
+        $interface_id = 1;
+        $result = RequestTable::where('interface_id',$interface_id)->select('id','request_mode','params')->get();
+        return $result;
     }
 
     function mb_str_split( $string ) {

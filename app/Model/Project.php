@@ -25,7 +25,6 @@ class Project extends Model
             return null;
         }
     }
-
     public static function getProjectInfo($id)
     {
         try {
