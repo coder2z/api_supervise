@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Message\viewFeedBackCheck;
 class viewFeedback extends Controller
 {
-    //
     public function viewFeedback(viewFeedBackCheck $request){
         $from_user_id=$request->from_user_id;
         $to_user_id=$request->to_user_id;

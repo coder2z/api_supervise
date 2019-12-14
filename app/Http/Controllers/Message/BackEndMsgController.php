@@ -26,7 +26,7 @@ class BackEndMsgController extends Controller
     }
 
     //我反馈的信息
-    public function fromMessage(Request $request)
+    public function fromMessage()
     {
         try {
             $id = Auth::id;
@@ -38,7 +38,7 @@ class BackEndMsgController extends Controller
     }
 
 //发送给我的
-    public function toMessage(Request $request)
+    public function toMessage()
     {
         try {
             $id = Auth::id();

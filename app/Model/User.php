@@ -127,7 +127,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->join('projects as t3', 't2.project_id', 't3.id')
                 ->join('positions as t4', 't1.id', 't4.user_id')
                 ->select('t1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
-                ->paginate(4);
+                ->paginate(env('PAGE_NUM'));
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
@@ -167,7 +167,6 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->leftJoin('projects as t3', 't2.project_id', 't3.id')
                 ->where('t1.id', $id)
                 ->update([
-                    't3.name' => $request->name,
                     't2.type' => $request->type
                 ]);
             return $res;
@@ -216,7 +215,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
                 ->where('t2.type', $data['type'])
                 ->where('t3.name', $data['pname'])
-                ->paginate(4);
+                ->paginate(env('PAGE_NUM'));
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取人员失败!', [$e->getMessage()]);
@@ -240,7 +239,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->where('t1.name', 'like', '%' . $data . '%')
                 ->orwhere('t1.email', 'like', '%' . $data . '%')
                 ->orwhere('t1.phone_number', 'like', '%' . $data . '%')
-                ->paginate(4)
+                ->paginate(env('PAGE_NUM'))
                 ->toarray();
             return $res;
         } catch (\Exception $e) {
@@ -297,7 +296,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         try {
             $data = self::where('name', 'like', '%' . $str . '%')
                 ->orwhere('phone_number', 'like', '%' . $str . '%')
-                ->orwhere('email', 'like', '%' . $str . '%')->paginate(8);
+                ->orwhere('email', 'like', '%' . $str . '%')->paginate(env('PAGE_NUM'));
             return $data;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询用户失败!', [$e->getMessage()]);
@@ -312,7 +311,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function selectUser()
     {
         try {
-            $user = self::orderBy('id', 'desc')->where('state', 0)->paginate(8);
+            $user = self::orderBy('id', 'desc')->where('state', 0)->paginate(env('PAGE_NUM'));
             $item = Project::all();
             $data = new class
             {
