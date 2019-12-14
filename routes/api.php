@@ -17,7 +17,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('oAuth')->namespace('OAuth')->group(function () {
-
     Route::post('login', 'AuthController@login'); //登陆
     Route::post('info', 'AuthController@info'); //获取用户信息
     Route::post('registered', 'AuthController@registered'); //用户注册
@@ -28,9 +27,6 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
 
 //魏子超
 Route::get('logs', 'Logs\LogController@logs');
-
-Route::post('test','Logs\TestController@test');
-
 
 //zhengruyuan
 Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {

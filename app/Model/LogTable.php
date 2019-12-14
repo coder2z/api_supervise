@@ -14,21 +14,21 @@ class LogTable extends Model
     public $timestamps = true;
 
 
-    /*//    public static function getLogs(){
-    ////        try{
-    //////            $res=self::all();
-    ////            return  $res=self::all();
-    ////        }catch(\Exception $e){
-    ////            \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
-    ////            return null;
-    ////        }
-    ////    }
+    public static function getLogs()
+    {
+        try {
+            return $res = self::all();
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
 
-        /**
-         * Get the relationships for the entity.
-         *
-         * @return array
-         */
+    /**
+     * Get the relationships for the entity.
+     *
+     * @return array
+     */
     public function getQueueableRelations()
     {
 

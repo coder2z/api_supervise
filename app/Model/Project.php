@@ -105,7 +105,6 @@ class Project extends Model
             $project->discribe = $array['discribe'];
             $project->amdin_user_id = $array['amdin_user_id'];
             $project->pre_url = $array['pre_url'];
-            $project->updated_at = $array['updated_at'];
             $result = $project->save();
             return $result ? true : false;
         } catch (Exception $e) {

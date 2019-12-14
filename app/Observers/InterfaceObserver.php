@@ -15,7 +15,6 @@ class InterfaceObserver
     {
         try {
             $id = Auth::id();
-//            $id = 1;
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();
@@ -23,7 +22,6 @@ class InterfaceObserver
             $res->operation_type = '增加';
             $res->operation_object = $interface->interface_name;
             $res->content = $user->name . '增加' . $interface->interface_name . '接口';
-            $res->created_at = $interface->created_at;
             $res->save();
         } catch (\Exception $e) {
         }
@@ -33,17 +31,13 @@ class InterfaceObserver
     {
         try {
             $id=Auth::id();
-//            $id = 1;
-
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
-
             $res = new LogTable();
             $res->user_id = $id;
             $res->operation_type = '更新';
             $res->operation_object = $interface->interface_name;
             $res->content = $user->name . '更新' . $interface->interface_name . '接口';
-            $res->created_at = $interface->created_at;
             $res->save();
         } catch (\Exception $e) {
 
@@ -55,7 +49,6 @@ class InterfaceObserver
     {
         try {
             $id=Auth::id();
-//            $id= 1;
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();
@@ -63,7 +56,6 @@ class InterfaceObserver
             $res->operation_type = '删除';
             $res->operation_object = $interface->interface_name;
             $res->content = $user->name . '删除' . $interface->interface_name . '接口';
-            $res->created_at = $interface->created_at;
             $res->save();
         } catch (\Exception $e) {
         }

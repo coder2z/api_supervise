@@ -45,7 +45,6 @@ class ProjectMember extends Model
                 $Puser -> project_id = $itemid;
                 $Puser -> user_id = $user -> id;
                 $Puser -> type = 0;
-                $Puser -> created_at = date('Y-m-d H:i:s',time());
                 $Puser -> save();
             }
             return true;
