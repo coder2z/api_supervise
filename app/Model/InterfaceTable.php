@@ -7,6 +7,8 @@ use App\Model\Assignment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\In;
 use App\Model\User;
+use App\Events\Event;
+
 
 class InterfaceTable extends Model
 {
@@ -16,6 +18,7 @@ class InterfaceTable extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
+
 
     //获取所有接口
     public static function get_API_all($pages){
@@ -132,4 +135,10 @@ class InterfaceTable extends Model
             return null;
         }
     }
+    public function getQueueableRelations()
+    {
+        // TODO: Implement getQueueableRelations() method.
+    }
 }
+
+

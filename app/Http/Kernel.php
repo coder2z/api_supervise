@@ -60,5 +60,7 @@ class Kernel extends HttpKernel
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'auth.check' => \App\Http\Middleware\OAuth\VerifyAuth::class,
         'manage'=>\App\Http\Middleware\CheckManage::class,
+        'manage'=>\App\Http\Middleware\Admin\checkManage::class,
+
     ];
 }

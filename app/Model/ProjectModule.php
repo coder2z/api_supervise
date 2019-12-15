@@ -13,7 +13,6 @@ class ProjectModule extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
-
     protected $guarded = [];
     //1.模块设置
     //查询模块
@@ -62,4 +61,5 @@ class ProjectModule extends Model
             return null;
         }
     }
+
 }

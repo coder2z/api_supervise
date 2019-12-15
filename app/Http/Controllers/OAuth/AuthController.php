@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\OAuth;
 
+use App\Http\Requests\OAuth\Auth\ChangePasswordRequest;
 use App\Http\Requests\OAuth\Auth\LoginRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OAuth\Auth\RegisteredRequest;
@@ -43,7 +44,6 @@ class AuthController extends Controller
             return response()->fail(500, '登陆失败!', null, 500);
         }
     }
-
 
     /**
      * 注册用户
@@ -107,6 +107,14 @@ class AuthController extends Controller
         return $newToken != null ?
             self::respondWithToken($newToken, '刷新成功!') :
             response()->fail(100, '刷新token失败!');
+    }
+
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        return !User::updateUserPassword($request) ?
+            response()->fail(100, '修改密码失败！请检查原密码！') :
+            response()->success(200, '修改密码成功！');
     }
 
     /**

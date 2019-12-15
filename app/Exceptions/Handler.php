@@ -51,19 +51,19 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-       return parent::render($request, $exception);
-        // if ($exception instanceof HttpException) {
-        //     if ($exception->getStatusCode() == '404') {
-        //         return response()->fail(404, 'Not found', null, 404);
-        //     } else {
-        //         \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
-        //         return response()->fail(500, '服务器错误!', null, 500);
-        //     }
-        // } else if ($exception instanceof AuthenticationException) {
-        //     return response()->fail(403, '没有权限!', null, 403);
-        // } else {
-        //     \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
-        //     return response()->fail(500, '服务器错误!', null, 500);
-        // }
+        return parent::render($request, $exception);
+//        if ($exception instanceof HttpException) {
+//            if ($exception->getStatusCode() == '404') {
+//                return response()->fail(404, 'Not found', null, 404);
+//            } else {
+//                \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
+//                return response()->fail(500, '服务器错误!', null, 500);
+//            }
+//        } else if ($exception instanceof AuthenticationException) {
+//            return response()->fail(403, '没有权限!', null, 403);
+//        } else {
+//            \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
+//            return response()->fail(500, '服务器错误!', null, 500);
+//        }
     }
 }
