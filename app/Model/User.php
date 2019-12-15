@@ -305,8 +305,9 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     }
 
     /**
-     * 查询用户
-     *
+     *  查询用户
+     * @return __anonymous@8413|null
+     * @throws \Exception
      */
     public static function selectUser()
     {
@@ -321,7 +322,157 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $data;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('添加用户失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+
+    /**
+     * @param $access_code
+     * @param $page
+     * @param array $array
+     * @return |null
+     * @throws \Exception
+     */
+    public static function getInfo($access_code, $page, $array = [])
+    {
+        try {
+            return $access_code == null ?
+                User::select($array)->paginate($page) :
+                User::select($array)->where('access_code', $access_code)->paginate($page);
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * 删除用户
+     * @param $user_id
+     * @return |null
+     * @throws \Exception
+     */
+    public static function adminDeleteUser($user_id)
+    {
+        try {
+            $user = User::find($user_id);
+            if ($user != null) {
+                $message = $user->name + '被删除了';
+                \App\Utils\Logs::logInfo($message, Auth::user());
+                return $user->delete();
+            } else {
+                return null;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('删除用户失败！', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+
+    /**
+     * 搜索用户
+     * @param $search
+     * @param $page
+     * @param array $array
+     * @return |null
+     * @throws \Exception
+     */
+    public static function Search($search, $page, $array = [])
+    {
+        try {
+            return User::select($array)->where('name', 'like', '%' . $search . '%')
+                ->orwhere('phone_number', 'like', '%' . $search . '%')
+                ->orwhere('email', 'like', '%' . $search . '%')->paginate($page);
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('搜索用户失败！', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * 获取指定用户信息
+     * @param $user_id
+     * @param array $array
+     * @return |null
+     * @throws \Exception
+     */
+    public static function ShowUserInfo($user_id, $array = [])
+    {
+        try {
+            return DB::table('users')->select($array)->where('users.id', '=', $user_id)->get();
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('获取用户信息失败！', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+
+
+    /**
+     * 修改用户
+     * @param array $array
+     * @return bool
+     * @throws \Exception
+     */
+    public static function UpdateUserInfo($array = [])
+    {
+        try {
+            if ($array[2] == null) {
+                $user = User::where('id', $array[0])->update([
+                    'name' => $array[1],
+                    'phone_number' => $array[3],
+                    'email' => $array[4],
+                    'access_code' => $array[5],
+                    'state' => $array[6],
+                ]);
+            } else {
+                $user = User::where('id', $array[0])->update([
+                    'name' => $array[1],
+                    'password' => bcrypt($array[2]),
+                    'phone_number' => $array[3],
+                    'email' => $array[4],
+                    'access_code' => $array[5],
+                    'state' => $array[6],
+                ]);
+            }
+            if ($user) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('修改用户信息失败！', [$e->getMessage()]);
             return false;
         }
     }
+
+
+    /**
+     * 添加用户
+     * @param array $array
+     * @return bool
+     * @throws \Exception
+     */
+    public static function AddUser($array = [])
+    {
+        try {
+            $model = new User();
+            $model->name = $array[0];
+            $model->password = bcrypt($array[1]);
+            $model->phone_number = $array[2];
+            $model->email = $array[3];
+            $model->access_code = $array[4];
+            $result = $model->save();
+            if ($result) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('新增用户信息失败！', [$e->getMessage()]);
+            return false;
+        }
+    }
+
 }

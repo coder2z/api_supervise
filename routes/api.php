@@ -26,7 +26,7 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
 });
 
 //魏子超
-Route::get('logs', 'Logs\LogController@logs');//
+Route::get('logs', 'Logs\LogController@logs');//{按照时间降序}
 
 //zhengruyuan
 Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
