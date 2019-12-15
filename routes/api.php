@@ -29,17 +29,26 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
 Route::get('logs', 'Logs\LogController@logs');//{按照时间降序}
 
 //zhengruyuan
-Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
-    Route::get('getAllUsers', 'UserController@getAllUsers');//显示全部人员    {项目管理员只能看到自己的项目！这里查询的是所有}
-    Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser');//获取要修改的人员 {获取但是使用的model方法是删除}
-    Route::post('updateUser/{id}', 'UserController@updateUser');//修改人员  {这里只能修改类型}
-    Route::get('deleteUser/{id}', 'UserController@deleteUser');//移除人员   {这里应该直接在项目人员表中删除就行，而不是设置项目id为0}
-    Route::get('getUsers', 'UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)   {成员类型是什么？}
-    Route::post('searchUser', 'UserController@searchUser');//搜索人员
+// Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
+    //     Route::get('getAllUsers', 'UserController@getAllUsers');//显示全部人员    {项目管理员只能看到自己的项目！这里查询的是所有}
+    //     Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser');//获取要修改的人员 {获取但是使用的model方法是删除}
+    //     Route::post('updateUser/{id}', 'UserController@updateUser');//修改人员  {这里只能修改类型}
+    //     Route::get('deleteUser/{id}', 'UserController@deleteUser');//移除人员   {这里应该直接在项目人员表中删除就行，而不是设置项目id为0}
+    //     Route::get('getUsers', 'UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)   {成员类型是什么？}
+    //     Route::post('searchUser', 'UserController@searchUser');//搜索人员
+    // });
+//zhengruyuan
+Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function(){
+    Route::get('getAllUsers','UserController@getAllUsers');//显示全部人员
+    Route::get('getUpdateUser/{id}','UserController@getUpdateUser');//获取要修改的人员
+    Route::post('updateUser/{id}','UserController@updateUser');//修改人员
+    Route::get('deleteUser/{id}','UserController@deleteUser');//移除人员
+    Route::get('getUsers','UserController@getUsers');//获取所有人员(不包括负责人)
+    Route::post('searchUser','UserController@searchUser');//搜索人员
 });
-
-//易康
-Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
+    
+    //易康
+    Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
     Route::get('getAllProject', 'ProjectController@getAllProject'); //项目管理员获取全部项目信息
     Route::get('getProject/{id}', 'ProjectController@getProject'); //获取指定{id}项目信息
     Route::post('setProject/{id}', 'ProjectController@setProject'); //修改项目
