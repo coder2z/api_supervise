@@ -109,6 +109,22 @@ return [
         'email'                            => '邮箱',
         'password'                         => '密码',
         'phone_number'                     =>'电话号码',
-        'password_confirmation'            =>'确认密码'
+        'password_confirmation'            =>'确认密码',
+        'ProjectName'                      => '项目名称',
+        'ProjectDescription'               => '项目描述',
+        'RequirementDocument'              => '需求文档',
+        'PrototypeMap'                     => '原型图',
+        'state'                            => '状态',
+        'access_code'                      => '权限',
+        'phone'                            => '电话号码',
+        'Content'                          => '搜索框内容',
+        'develop_id'                       => '开发人员ID',
+        'module_id'                        => '模块ID',
+        'utility'                          =>'模块作用',
+        'class_name'                       =>'类名',
+        'full_class_name'                  =>'全类名',
+        'error_code'                       =>'错误码',
+        'error_info'                       =>'错误码说明',
+        'http_code'                        =>'HTTP状态码'
     ],
 ];
