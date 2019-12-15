@@ -17,12 +17,12 @@ class UserObserver
      */
     public function created(User $user)
     {
-        try {
+//        try {
             Mail::to($user->email)->later(env('MAIL_TIME'), new Welcome($user));
             \App\Utils\Logs::logInfo('创建用户成功! 注册邮件发送成功!', [$user]);
-        } catch (\Exception $e) {
-            \App\Utils\Logs::logError('注册邮件发送失败!', [$e->getMessage()]);
-        }
+//        } catch (\Exception $e) {
+//            \App\Utils\Logs::logError('注册邮件发送失败!', [$e->getMessage()]);
+//        }
     }
 
     /**

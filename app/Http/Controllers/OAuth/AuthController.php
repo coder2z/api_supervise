@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\OAuth;
 
+use App\Http\Requests\OAuth\Auth\ChangePasswordRequest;
 use App\Http\Requests\OAuth\Auth\LoginRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\OAuth\Auth\RegisteredRequest;
@@ -108,6 +109,14 @@ class AuthController extends Controller
             response()->fail(100, '刷新token失败!');
     }
 
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        return !User::updateUserPassword($request) ?
+            response()->fail(100, '修改密码失败！请检查原密码！') :
+            response()->success(200, '修改密码成功！');
+    }
+
     /**
      * @param $token
      * @return \Illuminate\Http\JsonResponse
@@ -152,6 +161,8 @@ class AuthController extends Controller
     {
         $registeredInfo = $request->except('password_confirmation');
         $registeredInfo['password'] = bcrypt($registeredInfo['password']);
+        $registeredInfo['created_at'] = date("Y-m-d H:i:s");
+        $registeredInfo['updated_at'] = date("Y-m-d H:i:s");
         return $registeredInfo;
     }
 }

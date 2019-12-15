@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
@@ -125,11 +127,13 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->join('projects as t3', 't2.project_id', 't3.id')
                 ->join('positions as t4', 't1.id', 't4.user_id')
                 ->select('t1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
-                ->paginate(4);
+                ->paginate(env('PAGE_NUM'));
+            return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
+            return null;
         }
-        return $res;
+
     }
 
     /**
@@ -163,12 +167,12 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->leftJoin('projects as t3', 't2.project_id', 't3.id')
                 ->where('t1.id', $id)
                 ->update([
-                    't3.name' => $request->name,
                     't2.type' => $request->type
                 ]);
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('修改人员失败!', [$e->getMessage()]);
+            return 0;
         }
     }
 
@@ -194,6 +198,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return $data;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('移除人员失败!', [$e->getMessage()]);
+            return 0;
         }
     }
 
@@ -210,15 +215,18 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
                 ->where('t2.type', $data['type'])
                 ->where('t3.name', $data['pname'])
-                ->paginate(4);
+                ->paginate(env('PAGE_NUM'));
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取人员失败!', [$e->getMessage()]);
+            return null;
         }
     }
 
     /**
-     * 查询
+     * @param $data
+     * @return mixed
+     * @throws \Exception
      */
     public static function searchUser($data)
     {
@@ -231,11 +239,89 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->where('t1.name', 'like', '%' . $data . '%')
                 ->orwhere('t1.email', 'like', '%' . $data . '%')
                 ->orwhere('t1.phone_number', 'like', '%' . $data . '%')
-                ->paginate(4)
+                ->paginate(env('PAGE_NUM'))
                 ->toarray();
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('搜索失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * 修改用户密码
+     * @param $request
+     * @return bool
+     * @throws \Exception
+     */
+    public static function updateUserPassword($request)
+    {
+        try {
+            if (self::checkOldPassword($request->old_password)) {
+                return self::where('id', Auth::id())->update(['password' => bcrypt($request->new_password)]) ?
+                    true :
+                    false;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('修改密码发生错误!', [$e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * 检查用户原密码
+     * @param $old_password
+     * @return mixed
+     * @throws \Exception
+     */
+    protected static function checkOldPassword($old_password)
+    {
+        try {
+            return Hash::check($old_password, self::where('id', Auth::id())->first()->password);
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('检查用户原密码发生错误!', [$e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * @param $str
+     * @return bool
+     * @throws \Exception
+     */
+    public static function queryUsers($str)
+    {
+        try {
+            $data = self::where('name', 'like', '%' . $str . '%')
+                ->orwhere('phone_number', 'like', '%' . $str . '%')
+                ->orwhere('email', 'like', '%' . $str . '%')->paginate(env('PAGE_NUM'));
+            return $data;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('查询用户失败!', [$e->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * 查询用户
+     *
+     */
+    public static function selectUser()
+    {
+        try {
+            $user = self::orderBy('id', 'desc')->where('state', 0)->paginate(env('PAGE_NUM'));
+            $item = Project::all();
+            $data = new class
+            {
+            };
+            $data->user = $user;
+            $data->item = $item;
+            return $data;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('添加用户失败!', [$e->getMessage()]);
+            return false;
         }
     }
 }

@@ -2,8 +2,11 @@
 
 namespace App\Model;
 
+
+use Illuminate\Contracts\Auth\Guard;
 use App\Utils\Logs;
 use Exception;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,15 +19,41 @@ class Project extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
-    public static function getAllProjectInfo()
+
+
+    /**
+     * Get the relationships for the entity.
+     *
+     * @return array
+     */
+
+
+    public function getQueueableRelations()
+    {
+        // TODO: Implement getQueueableRelations() method.
+    }
+    /**
+     * @return |null
+     * @throws Exception
+     */
+    public static function getMeAllProjectInfo()
     {
         try {
-            return self::orderBy('updated_at', 'desc')->select('name', 'discribe')->paginate(12);
+            return self::orderBy('updated_at', 'desc')
+                ->select('id', 'name', 'discribe')
+                ->where('amdin_user_id', auth()->id())
+                ->paginate(env('PAGE_NUM'));
         } catch (Exception $e) {
             Logs::logError('查询全部项目信息失败！', [$e->getMessage()]);
             return null;
         }
     }
+
+    /**
+     * @param $id
+     * @return |null
+     * @throws Exception
+     */
     public static function getProjectInfo($id)
     {
         try {
@@ -40,6 +69,12 @@ class Project extends Model
         }
     }
 
+
+    /**
+     * @param array $array
+     * @return Project|bool
+     * @throws Exception
+     */
     public static function createProject($array = [])
     {
         try {
@@ -56,6 +91,12 @@ class Project extends Model
         }
     }
 
+    /**
+     * @param array $array
+     * @param $id
+     * @return bool
+     * @throws Exception
+     */
     public static function updateProject($array = [], $id)
     {
         try {
@@ -64,7 +105,6 @@ class Project extends Model
             $project->discribe = $array['discribe'];
             $project->amdin_user_id = $array['amdin_user_id'];
             $project->pre_url = $array['pre_url'];
-            $project->updated_at = $array['updated_at'];
             $result = $project->save();
             return $result ? true : false;
         } catch (Exception $e) {
@@ -73,6 +113,12 @@ class Project extends Model
         }
     }
 
+
+    /**
+     * @param $id
+     * @return bool
+     * @throws Exception
+     */
     public static function destroyProject($id)
     {
         try {
@@ -83,4 +129,17 @@ class Project extends Model
             return false;
         }
     }
+
+    //获取项目信息(单独用)
+    public static function findProjectMsg($project_id){
+        try{
+            $result = self::where('id',$project_id)->select('id','name','discribe')->get();
+            return $result;
+        } catch (Exception $e){
+            Logs::logError('查询项目信息失败!', [$e->getMessage()]);
+            return null;
+        }
+
+    }
+
 }

@@ -14,18 +14,23 @@ use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getAllProject()
     {
-        $projectInfo = Project::getAllProjectInfo();
-        if ($projectInfo !== null) {
-            Logs::logInfo('获取全部信息成功');
-            return response()->success(200, '获取全部信息成功', $projectInfo);
-        } else {
-            Logs::logError('获取全部信息失败');
-            return response()->fail(100, '获取全部信息失败', $projectInfo);
-        }
+        $projectInfo = Project::getMeAllProjectInfo();
+        return $projectInfo !== null ?
+            response()->success(200, '获取全部信息成功', $projectInfo) :
+            response()->fail(100, '获取全部信息失败');
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function getProject($id)
     {
         if ($id <= 0) {
@@ -38,17 +43,22 @@ class ProjectController extends Controller
             return response()->success(200, '获取信息成功', $projectInfo);
         } else {
             Logs::logError('获取信息失败');
-            return response()->fail(100, '获取信息失败', $projectInfo);
+            return response()->fail(100, '获取信息失败');
         }
     }
 
+    /**
+     * @param getProjectRequest $request
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function setProject(getProjectRequest $request, $id)
     {
         if ($id <= 0) {
             Logs::logError('传入id值小于零');
             return response()->fail(100, '传入id值小于零', null);
         }
-        // $adminid = User::find(1);
         $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
@@ -71,9 +81,13 @@ class ProjectController extends Controller
         return response()->success(200, '更新成功', null);
     }
 
+    /**
+     * @param getProjectRequest $request
+     * @return mixed
+     * @throws Exception
+     */
     public function addProject(getProjectRequest $request)
     {
-        // $adminid = User::find(1);
         $adminid = Auth::id();
         if (!self::CheckAdminId($adminid)) {
             return response()->fail(100, '用户权限不够', null);
@@ -90,38 +104,50 @@ class ProjectController extends Controller
         return response()->success(200, '添加成功', null);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws Exception
+     */
     public function deleteProject($id)
     {
         if ($id <= 0) {
             Logs::logError('传入id值小于零');
-            return response()->fail(100, '传入id值小于零', null);
+            return response()->fail(100, '传入id值小于零');
         }
         try {
             if ($word = Annex::FindAnnexPath($id, 2))
                 if (!self::deleteAnnex($word, 'word'))
-                    return response()->fail(100, '删除word文件失败', null);
+                    return response()->fail(100, '删除word文件失败');
         } catch (Exception $e) {
             Logs::logError('删除word文件失败', [$e->getMessage()]);
-            return response()->fail(100, '删除word文件失败', null);
+            return response()->fail(100, '删除word文件失败');
         }
         try {
             if ($rp = Annex::FindAnnexPath($id, 1))
                 if (!self::deleteAnnex($rp, 'rp'))
-                    return response()->fail(100, '删除rp文件失败', null);
+                    return response()->fail(100, '删除rp文件失败');
         } catch (Exception $e) {
             Logs::logError('删除rp文件失败', [$e->getMessage()]);
-            return response()->fail(100, '删除rp文件失败', null);
+            return response()->fail(100, '删除rp文件失败');
         }
         $status = Project::destroyProject($id);
         if ($status) {
             Logs::logInfo('删除项目成功');
-            return response()->success(200, '删除成功', null);
+            return response()->success(200, '删除成功');
         } else {
             Logs::logError('删除项目失败');
-            return response()->fail(100, '删除失败', null);
+            return response()->fail(100, '删除失败');
         }
     }
 
+    /**
+     * @param $file
+     * @param $status
+     * @param $project_id
+     * @return bool
+     * @throws Exception
+     */
     private function upload($file, $status, $project_id)
     {
         try {
@@ -151,11 +177,19 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     private function CheckAdminId($id)
     {
         return $id->access_code == -1 ? true : false;
     }
 
+    /**
+     * @param $request
+     * @return mixed
+     */
     private function projectHandle($request)
     {
         $projectinfo['name'] = $request->ProjectName;
@@ -165,6 +199,12 @@ class ProjectController extends Controller
         return $projectinfo;
     }
 
+    /**
+     * @param $filename
+     * @param $status
+     * @return bool
+     * @throws Exception
+     */
     private function deleteAnnex($filename, $status)
     {
         try {
