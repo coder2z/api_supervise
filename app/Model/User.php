@@ -119,21 +119,39 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
      * @return
      * @throws \Exception
      */
-    public static function getAllUsers()
+    public static function getAllUsers($id)
     {
         try {
             $res = DB::table('users as t1')
-                ->join('project_members as t2', 't1.id', '=', 't2.user_id')
-                ->join('projects as t3', 't2.project_id', 't3.id')
-                ->join('positions as t4', 't1.id', 't4.user_id')
-                ->select('t1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
+                ->leftjoin('project_members as t2', 't1.id', '=', 't2.user_id')
+                ->leftjoin('projects as t3', 't2.project_id', 't3.id')
+                ->leftjoin('positions as t4', 't1.id', 't4.user_id')
+                ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name as project_name')
+                ->where('t3.amdin_user_id', $id)
                 ->paginate(env('PAGE_NUM'));
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
-            return null;
         }
+    }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function getUpdateUsers($id)
+    {
+        try {
+            $data = DB::table('users as t1')
+                ->leftJoin('positions as t2', 't1.id', 't2.user_id')
+                ->select('t1.id', 't1.name', 't1.phone_number', 't1.email', 't2.position_code')
+                ->where('t1.id', $id)
+                ->get();
+            return $data;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('获取修改人员失败!', [$e->getMessage()]);
+        }
     }
 
     /**
@@ -163,42 +181,33 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     {
         try {
             $res = DB::table('users as t1')
-                ->leftJoin('project_members as t2', 't1.id', 't2.user_id')
-                ->leftJoin('projects as t3', 't2.project_id', 't3.id')
+                ->join('project_members as t2', 't1.id', 't2.user_id')
+                ->join('projects as t3', 't2.project_id', 't3.id')
+                ->join('positions as t4', 't4.user_id', 't1.id')
                 ->where('t1.id', $id)
+                ->where('t3.id', $request->pid)
                 ->update([
-                    't2.type' => $request->type
+                    't4.position_code' => $request->pcode
                 ]);
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('修改人员失败!', [$e->getMessage()]);
-            return 0;
         }
     }
 
     /**
      *移除人员
      */
-    public static function deleteUser($pname, $id)
+    public static function deleteUser($pid, $id)
     {
         try {
-            $res = DB::table('users as t1')
-                ->leftjoin('project_members as t2', 't1.id', 't2.user_id')
-                ->leftjoin('projects as t3', 't3.id', 't2.project_id')
-                ->select('t2.id')
-                ->where('t3.name', $pname)
-                ->where('t1.id', $id)
-                ->get()
-                ->toarray();
-            $data = DB::table('project_members')
-                ->where('id', $res[0]->id)
-                ->update([
-                    'project_id' => 0,
-                ]);
-            return $data;
+            $res = DB::table('project_members')
+                ->where('project_id', $pid)
+                ->where('user_id', $id)
+                ->delete();
+            return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('移除人员失败!', [$e->getMessage()]);
-            return 0;
         }
     }
 
@@ -213,13 +222,12 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->join('projects as t3', 't2.project_id', 't3.id')
                 ->join('positions as t4', 't1.id', 't4.user_id')
                 ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name')
-                ->where('t2.type', $data['type'])
-                ->where('t3.name', $data['pname'])
+                ->where('t4.position_code', $data['pcode'])
+                ->where('t3.id', $data['pid'])
                 ->paginate(env('PAGE_NUM'));
             return $res;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取人员失败!', [$e->getMessage()]);
-            return null;
         }
     }
 
@@ -406,7 +414,6 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return null;
         }
     }
-
 
 
     /**
