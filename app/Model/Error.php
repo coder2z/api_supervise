@@ -19,18 +19,26 @@ class Error extends Model
 
     //2.错误码设置
     //查询错误码
-    public static function selectErrorCodeMethod(){
-        return Error::paginate(10,['error_code','error_info','http_code']);
+    public static function selectErrorCodeMethod()
+    {
+        try {
+            return Error::paginate(env('PAGE_NUM'), ['error_code', 'error_info', 'http_code']);
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('查询错误码失败!', [$e->getMessage()]);
+            return null;
+        }
     }
+
     //新增错误码
-    public static function addErrorCodeMethod($input){
-        try{
+    public static function addErrorCodeMethod($input)
+    {
+        try {
             //开启事务
             DB::beginTransaction();
             $rs = Error::create($input);
             DB::commit();
             return $rs;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             \App\Utils\Logs::logError('新增错误码失败!', [$e->getMessage()]);
             DB::rollback();
             return null;
@@ -38,14 +46,15 @@ class Error extends Model
     }
 
     //修改错误码
-    public static function editErrorCodeMethod($input,int $e_id){
-        try{
+    public static function editErrorCodeMethod($input, int $e_id)
+    {
+        try {
             //开启事务
             DB::beginTransaction();
-            $rs = Error::where('id',$e_id)->update($input);
+            $rs = Error::where('id', $e_id)->update($input);
             DB::commit();
             return $rs;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             \App\Utils\Logs::logError('修改错误码失败!', [$e->getMessage()]);
             DB::rollback();
             return null;
@@ -53,14 +62,15 @@ class Error extends Model
     }
 
     //删除错误码
-    public static function deErrorCodeMethod($e_id){
-        try{
+    public static function deErrorCodeMethod($e_id)
+    {
+        try {
             //开启事务
             DB::beginTransaction();
-            $rs = Error::where('id',$e_id)->delete();
+            $rs = Error::where('id', $e_id)->delete();
             DB::commit();
             return $rs;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             \App\Utils\Logs::logError('删除错误码信息失败!', [$e->getMessage()]);
             DB::rollback();
             return null;

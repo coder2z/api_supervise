@@ -20,7 +20,6 @@ class SettingFileController extends Controller
 
         $annex = json_decode($annex, true);
         $project = Project::find($project_id);
-
         if ($annex != null && $project != null) {
             return \response()->json([
                 "code" => 200,
@@ -34,7 +33,7 @@ class SettingFileController extends Controller
             return \response()->json([
                 "code" => 100,
                 "msg" => "缺少github_address或Storage_url，不能返回信息",
-                "data" => []
+                "data" => null
             ]);
         }
     }
@@ -54,8 +53,6 @@ class SettingFileController extends Controller
         $annex[0]->project_id = $updated["project_id"];
         $annex[0]->path = $updated["path"];
         $annex[0]->type = $updated["type"];
-        $annex[0]->created_at = $updated["created_at"];
-        $annex[0]->updated_at = $updated["updated_at"];
 
         if ($annex[0]->save()) {
             $project = Project::find($project_id);
@@ -63,18 +60,21 @@ class SettingFileController extends Controller
             if ($project->save()) {
                 return \response()->json([
                     "code" => 200,
-                    "msg" => "更新配置文件成功"
+                    "msg" => "更新配置文件成功",
+                    "data" => null
                 ]);
             } else {
                 return \response()->json([
                     "code" => 100,
-                    "msg" => "更新配置文件失败"
+                    "msg" => "更新配置文件失败",
+                    "data" => null
                 ]);
             }
         }
         return \response()->json([
             "code" => 100,
-            "msg" => "更新配置文件失败"
+            "msg" => "更新配置文件失败",
+            "data" => null
         ]);
     }
 
@@ -83,14 +83,11 @@ class SettingFileController extends Controller
         $path = $request->get("project_sql");
         $project_id = $request->get("project_id");
         $github_address = $request->get("github_address");
-
         if ($project_id != null) {
-
             $annex = new Annex();
             $annex->project_id = $project_id;
             $annex->path = $path;
             $annex->type = 0;
-            $annex->created_at = date('Y-m-d h:i:s', time());
             $anTrue = $annex->save();
 
             if ($anTrue) {
@@ -102,26 +99,28 @@ class SettingFileController extends Controller
                     return \response()->json([
                         "code" => 200,
                         "msg" => "添加配置文件成功",
-                        'data'=>null
+                        'data' => null
                     ]);
                 } else {
                     return \response()->json([
                         "code" => 100,
                         "msg" => "添加配置文件失败",
-                        'data'=>null
+                        'data' => null
                     ]);
                 }
             }
         }
         return \response()->json([
             "code" => 422,
-            "msg" => "asignments_id 不能为空"
-        ]);
+            "msg" => '参数错误！',
+            'data' => [
+                "asignments_id 不能为空"
+            ]
+        ], 422);
     }
 
     public function uploadConfigurationFile(Request $request)
     {
-        $project_id = $request->get("project_id");
         $fileCharater = $request->file('file');
 
         if ($fileCharater->isValid()) {
@@ -132,10 +131,8 @@ class SettingFileController extends Controller
             if ($ext == 'sql') {
                 //获取文件的绝对路径
                 $path = $fileCharater->getRealPath();
-
                 //定义文件名,更具时间命名防止文件覆盖
                 $filename = date('Y-m-d-h-i-s') . '.' . $ext;
-
                 //存储文件
                 if (Storage::disk('public')->put($filename, file_get_contents($path))) {
                     return \response()->json([
@@ -150,12 +147,14 @@ class SettingFileController extends Controller
                 return \response()->json([
                     "code" => 100,
                     "msg" => "文件类型错误",
+                    'data' => null
                 ]);
             }
         }
         return \response()->json([
             "code" => 100,
             "msg" => "无效文件",
+            'data' => null
         ]);
     }
 }

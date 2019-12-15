@@ -12,7 +12,10 @@ class ErrorCodeSettingController extends Controller
     //2.错误码设置
     //查询错误代码
     public function selectErrorCode(){
-        return Error::selectErrorCodeMethod();
+        $data=Error::selectErrorCodeMethod();
+        return $data != null ?
+            response()->success(200,'获取错误码成功',$data):
+            response()->fail(100,'获取错误码失败');
     }
     //新增错误码
     public function addErrorCode(ErrorCodeRequest $request){

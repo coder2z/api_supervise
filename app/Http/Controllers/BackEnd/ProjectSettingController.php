@@ -12,8 +12,7 @@ class ProjectSettingController extends Controller
     //得到项目的配置文件及项目地址
     public function getConfigFile(Request $request)
     {
-    	$project_id=$request->project_id; 
-        
+    	$project_id=$request->project_id;
     	$data=[];
     	$annex=new Annex();
     	$annex_data=$annex->findConfigById($project_id);
@@ -29,15 +28,13 @@ class ProjectSettingController extends Controller
     			$data[]=['sql_path'=>$val['path']];
     	}
     	$data[]=$github_url;
-    	return response()->json(['status'=>'成功','code'=>200,'data'=>$data]);
-    	
+        return response()->success(200,'成功',$data);
     }
 
     //下载配置文件
     public function downloadConfigFile(Request $request)
     {
     	$path=$request->file_path;
-
         return response()->download($path);
     }
 }

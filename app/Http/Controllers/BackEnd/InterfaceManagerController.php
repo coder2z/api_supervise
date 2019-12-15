@@ -17,10 +17,11 @@ use App\Model\ProjectModule;
 class InterfaceManagerController extends Controller
 {
     //后端新建接口
-    public function store(Request $request){
-        $userId = 13;
+    public function store(Request $request)
+    {
+        $userId = auth()->id();
 
-        $data= $request->getContent();
+        $data = $request->getContent();
         $data = json_decode($data);
 
         //string 接口名 interface_tables.interface_name
@@ -51,7 +52,7 @@ class InterfaceManagerController extends Controller
         $interface_response_fail_example = $data->interface_response_fail_example;
 
         DB::beginTransaction();
-        try{
+        try {
             $interfaces = new InterfaceTable;
             $requestTable = new RequestTable;
             $responseTableFail = new ResponseTable;
@@ -62,10 +63,10 @@ class InterfaceManagerController extends Controller
             $interfaces->interface_discribe = $interface_intro;
             $interfaces->module_id = $interface_module_id;
             $interfaces->function_name = $interface_function_name;
-            
+
             $requestTable->request_mode = $interfaec_method;
-            $requestTable->params = json_encode(['interface_request_type'=>$interface_request_type,
-                                                 'interface_request'=>$interface_request]);
+            $requestTable->params = json_encode(['interface_request_type' => $interface_request_type,
+                'interface_request' => $interface_request]);
             $requestTable->header = json_encode($interface_header);
 
             $responseTableFail->response_data_type = $interface_response_type;
@@ -91,24 +92,25 @@ class InterfaceManagerController extends Controller
             $responseTableSuccess->save();
             DB::commit();
             Logs::logInfo("用id为{$userId}添加接口成功.接口id为{$interfaces->id}.");
-            return response()->success(200,'添加成功',null);
-        }catch(\Exception $e){
+            return response()->success(200, '添加成功', null);
+        } catch (\Exception $e) {
             DB::rollBack();
-            Logs::logError("用id为{$userId}添加接口错误，数据库详细报错:".$e->getMessage());
-            return response()->fail(100,'添加失败',null);
+            Logs::logError("用id为{$userId}添加接口错误，数据库详细报错:" . $e->getMessage());
+            return response()->fail(100, '添加失败', null);
         }
     }
-    //后端显示一个接口
-    public function show($interface_id){
-        $userId = 13;
 
+    //后端显示一个接口
+    public function show($interface_id)
+    {
+        $userId = auth()->id();
         DB::beginTransaction();
-        try{
+        try {
             $interfaces = InterfaceTable::find($interface_id);
-            $requestTable = RequestTable::where('interface_id',$interface_id)->first();
-            $responseTableFail = ResponseTable::where(['interface_id'=>$interface_id,'state'=>0])->first();
-            $responseTableSuccess = ResponseTable::where(['interface_id'=>$interface_id,'state'=>1])->first();
-            
+            $requestTable = RequestTable::where('interface_id', $interface_id)->first();
+            $responseTableFail = ResponseTable::where(['interface_id' => $interface_id, 'state' => 0])->first();
+            $responseTableSuccess = ResponseTable::where(['interface_id' => $interface_id, 'state' => 1])->first();
+
             $returnRes['interface_id'] = $interfaces->id;
             $returnRes['interface_name'] = $interfaces->interface_name;
             $returnRes['interfaec_method'] = $requestTable->request_mode;
@@ -123,27 +125,27 @@ class InterfaceManagerController extends Controller
             $returnRes['interface_request'] = json_decode($requestTable->params)->interface_request;
             $returnRes['interface_module_id'] = $interfaces->module_id;
 
-            $errorIdsObj = ErrorRelation::where('interface_id',$interfaces->id)->select('error_id')->get();
+            $errorIdsObj = ErrorRelation::where('interface_id', $interfaces->id)->select('error_id')->get();
             foreach ($errorIdsObj as $key => $value) {
                 $errorIdsArray[] = $value->error_id;
             }
             $returnRes['interface_response_error_code_ids'] = $errorIdsArray;
             DB::commit();
             Logs::logInfo("用id为{$userId}查询接口成功.接口id为{$interface_id}.");
-            return response()->success(200,'查询成功',$returnRes);
-        }catch(\Exception $e){
+            return response()->success(200, '查询成功', $returnRes);
+        } catch (\Exception $e) {
             DB::rollBack();
-            Logs::logError("用id为{$userId}查询接口错误，数据库详细报错:".$e->getMessage());
-            return response()->fail(100,'查询失败',null);
+            Logs::logError("用id为{$userId}查询接口错误，数据库详细报错:" . $e->getMessage());
+            return response()->fail(100, '查询失败', null);
         }
-
-        return $interface_id;
     }
-    //后端修改一个接口
-    public function save(Request $request,$interface_id){
-        $userId = 13;
 
-        $data= $request->getContent();
+    //后端修改一个接口
+    public function save(Request $request, $interface_id)
+    {
+        $userId = auth()->id();
+
+        $data = $request->getContent();
         $data = json_decode($data);
 
         //string 接口名 interface_tables.interface_name
@@ -174,21 +176,21 @@ class InterfaceManagerController extends Controller
         $interface_response_fail_example = $data->interface_response_fail_example;
 
         DB::beginTransaction();
-        try{
+        try {
             $interfaces = InterfaceTable::find($interface_id);
-            $requestTable = RequestTable::where('interface_id',$interface_id)->first();
-            $responseTableFail = ResponseTable::where(['interface_id'=>$interface_id,'state'=>0])->first();
-            $responseTableSuccess = ResponseTable::where(['interface_id'=>$interface_id,'state'=>1])->first();
+            $requestTable = RequestTable::where('interface_id', $interface_id)->first();
+            $responseTableFail = ResponseTable::where(['interface_id' => $interface_id, 'state' => 0])->first();
+            $responseTableSuccess = ResponseTable::where(['interface_id' => $interface_id, 'state' => 1])->first();
 
             $interfaces->interface_name = $interface_name;
             $interfaces->route_path = $interface_url;
             $interfaces->interface_discribe = $interface_intro;
             $interfaces->module_id = $interface_module_id;
             $interfaces->function_name = $interface_function_name;
-            
+
             $requestTable->request_mode = $interfaec_method;
-            $requestTable->params = json_encode(['interface_request_type'=>$interface_request_type,
-                                                 'interface_request'=>$interface_request]);
+            $requestTable->params = json_encode(['interface_request_type' => $interface_request_type,
+                'interface_request' => $interface_request]);
             $requestTable->header = json_encode($interface_header);
 
             $responseTableFail->response_data_type = $interface_response_type;
@@ -197,8 +199,8 @@ class InterfaceManagerController extends Controller
             $responseTableSuccess->response_data = $interface_response_success_example;
 
             $interfaces->save();
-            ErrorRelation::where('interface_id',$interface_id)->delete();
-            foreach ($interface_response_error_code_ids as $key => $value){
+            ErrorRelation::where('interface_id', $interface_id)->delete();
+            foreach ($interface_response_error_code_ids as $key => $value) {
                 $errRelation = new ErrorRelation;
                 $errRelation->error_id = $value;
                 $errRelation->interface_id = $interfaces->id;
@@ -210,86 +212,94 @@ class InterfaceManagerController extends Controller
             $responseTableSuccess->save();
             DB::commit();
             Logs::logInfo("用id为{$userId}修改接口成功.修改接口id为{$interfaces->id}.");
-            return response()->success(200,'修改成功',null);
-        }catch(\Exception $e){
+            return response()->success(200, '修改成功', null);
+        } catch (\Exception $e) {
             DB::rollBack();
-            Logs::logError("用id为{$userId}修改接口错误，数据库详细报错:".$e->getMessage());
-            return response()->fail(100,'修改失败',null);
+            Logs::logError("用id为{$userId}修改接口错误，数据库详细报错:" . $e->getMessage());
+            return response()->fail(100, '修改失败', null);
         }
     }
+
     //删除一个接口
-    public function destroy($interface_id){
-        $userId = 13;
+    public function destroy($interface_id)
+    {
+        $userId = auth()->id();
 
         DB::beginTransaction();
-        try{
+        try {
             $interfaces = InterfaceTable::find($interface_id);
-            $requestTable = RequestTable::where('interface_id',$interface_id)->first();
-            $responseTableFail = ResponseTable::where(['interface_id'=>$interface_id,'state'=>0])->first();
-            $responseTableSuccess = ResponseTable::where(['interface_id'=>$interface_id,'state'=>1])->first();
-            if(empty($interfaces)){
-                Logs::logError("用id为{$userId}删除接口错误，未找到接口id:".$interface_id);
-                return response()->fail(100,'删除失败',null);
+            $requestTable = RequestTable::where('interface_id', $interface_id)->first();
+            $responseTableFail = ResponseTable::where(['interface_id' => $interface_id, 'state' => 0])->first();
+            $responseTableSuccess = ResponseTable::where(['interface_id' => $interface_id, 'state' => 1])->first();
+            if (empty($interfaces)) {
+                Logs::logError("用id为{$userId}删除接口错误，未找到接口id:" . $interface_id);
+                return response()->fail(100, '删除失败', null);
             }
-            ErrorRelation::where('interface_id',$interface_id)->delete();
+            ErrorRelation::where('interface_id', $interface_id)->delete();
             $requestTable->delete();
             $responseTableFail->delete();
             $responseTableSuccess->delete();
             $interfaces->delete();
             DB::commit();
             Logs::logInfo("用id为{$userId}删除接口成功.删除接口id为{$interfaces->id}.");
-            return response()->success(200,'删除成功',null);
-        }catch(\Exception $e){
+            return response()->success(200, '删除成功', null);
+        } catch (\Exception $e) {
             DB::rollBack();
-            Logs::logError("用id为{$userId}删除接口错误，数据库详细报错:".$e->getMessage());
-            return response()->fail(100,'删除失败',null);
+            Logs::logError("用id为{$userId}删除接口错误，数据库详细报错:" . $e->getMessage());
+            return response()->fail(100, '删除失败', null);
         }
     }
-    //删除一些接口
-    public function destroySelect(Request $request){
-        $userId = 13;
 
-        $data= $request->getContent();
+    //删除一些接口
+    public function destroySelect(Request $request)
+    {
+        $userId = auth()->id();
+
+        $data = $request->getContent();
         $data = json_decode($data);
         DB::beginTransaction();
-        try{
-            DB::table('response_tables')->whereIn('interface_id',$data)->delete();
-            DB::table('request_tables')->whereIn('interface_id',$data)->delete();
-            DB::table('error_relations')->whereIn('interface_id',$data)->delete();
-            DB::table('interface_tables')->whereIn('id',$data)->delete();
+        try {
+            DB::table('response_tables')->whereIn('interface_id', $data)->delete();
+            DB::table('request_tables')->whereIn('interface_id', $data)->delete();
+            DB::table('error_relations')->whereIn('interface_id', $data)->delete();
+            DB::table('interface_tables')->whereIn('id', $data)->delete();
             DB::commit();
             $data = json_encode($data);
             Logs::logInfo("用id为{$userId}删除接口成功.删除接口id为{$data}.");
-            return response()->success(200,'删除成功',null);
-        }catch(\Exception $e){
+            return response()->success(200, '删除成功', null);
+        } catch (\Exception $e) {
             DB::rollBack();
-            Logs::logError("用id为{$userId}删除接口错误，数据库详细报错:".$e->getMessage());
-            return response()->fail(100,'删除失败',null);
+            Logs::logError("用id为{$userId}删除接口错误，数据库详细报错:" . $e->getMessage());
+            return response()->fail(100, '删除失败', null);
         }
     }
+
     //显示模块名
-    public function showModuleName($projectId){
-        $userId = 13;
-        $res = ProjectModule::select(['id','modules_name'])->where('project_id',$projectId)->get();
+    public function showModuleName($projectId)
+    {
+        $userId = auth()->id();
+        $res = ProjectModule::select(['id', 'modules_name'])->where('project_id', $projectId)->get();
         $res = json_decode(json_encode($res));
-        if(empty($res)){
+        if (empty($res)) {
             Logs::logWarning("用id为{$userId}查询模块名失败，未找到数据.查询模块名项目id为{$projectId}.");
-            return response()->fail(100,'显示模块名失败，未找到对应工程模块名');
+            return response()->fail(100, '显示模块名失败，未找到对应工程模块名');
         }
         Logs::logInfo("用id为{$userId}查询模块名成功.查询模块名项目id为{$projectId}.");
-        return response()->success(200,'显示模块名成功.',$res);
+        return response()->success(200, '显示模块名成功.', $res);
     }
-    //显示错误码
-    public function showErrorCode($projectId){
-        $userId = 13;
 
-        $res = Error::select(['id','error_code','error_info','http_code'])->where('project_id',$projectId)->get();
+    //显示错误码
+    public function showErrorCode($projectId)
+    {
+        $userId = auth()->id();
+
+        $res = Error::select(['id', 'error_code', 'error_info', 'http_code'])->where('project_id', $projectId)->get();
         $res = json_decode(json_encode($res));
-        if(empty($res)){
+        if (empty($res)) {
             Logs::logWarning("用id为{$userId}查询错误码失败，未找到数据.查询错误码项目id为{$projectId}.");
-            return response()->fail(100,'显示错误码失败，未找到对应工程错误码');
+            return response()->fail(100, '显示错误码失败，未找到对应工程错误码');
         }
         Logs::logInfo("用id为{$userId}查询错误码成功.查询错误码项目id为{$projectId}.");
-        return response()->success(200,'显示错误码成功.',$res);
+        return response()->success(200, '显示错误码成功.', $res);
     }
 }

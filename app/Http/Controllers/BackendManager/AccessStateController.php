@@ -12,9 +12,9 @@ class AccessStateController extends Controller
 {
     //获取所有接口
     public function getAPIAll(){
-        $data=InterfaceTable::get_API_all(8);
+        $data=InterfaceTable::get_API_all(env('PAGE_NUM'));
         if($data==null){
-            return response()->fail(100,'失败','获取接口数据失败');
+            return response()->fail(100,'获取接口数据失败');
         }
         return response()->success(200,'成功',$data);
     }
@@ -24,9 +24,9 @@ class AccessStateController extends Controller
         $id=$request->interface_id;
         $data=InterfaceTable::get_API_info($id);
         if($data=='-1'){
-            return response()->fail(100,'失败','接口不存在');
+            return response()->fail(100,'接口不存在');
         }else if($data==null){
-            return response()->fail(100,'失败','查询接口失败');
+            return response()->fail(100,'查询接口失败');
         }else{
             return response()->success(200,'成功',$data);
         }
@@ -37,11 +37,11 @@ class AccessStateController extends Controller
         $id=$request->interface_id;
         $data=InterfaceTable::checkAPI($id,$request->state);
         if($data==0){
-            return response()->fail(100,'失败','接口不存在');
+            return response()->fail(100,'接口不存在');
         }else if($data==null){
-            return response()->fail(100,'失败','修改接口状态失败');
+            return response()->fail(100,'修改接口状态失败');
         }else{
-            return response()->success(200,'成功','修改成功');
+            return response()->success(200,'修改成功');
         }
     }
 

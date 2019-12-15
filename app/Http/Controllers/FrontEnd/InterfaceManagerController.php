@@ -9,13 +9,13 @@ use App\Model\Project;
 use App\Model\Mutual;
 use App\Utils\Logs;
 
-define('PAGENUM',10);
+define('PAGENUM',env('PAGE_NUM'));
 
 class InterfaceManagerController extends Controller
 {
     //获取接口列表
     public function index(){
-        $user_id = 1;
+        $user_id = auth()->id();
         $indexTable = Project::join('project_members','projects.id','project_members.project_id')
                                 ->join('project_modules','projects.id','project_modules.project_id')
                                 ->join('interface_tables','project_modules.id','interface_tables.module_id')
@@ -34,7 +34,7 @@ class InterfaceManagerController extends Controller
     }
     //接口名搜索接口
     public function searchInterface(Request $request){
-        $user_id = 1;
+        $user_id = auth()->id();
         
         $searchTable = Project::join('project_members','projects.id','project_members.project_id')
                                 ->join('project_modules','projects.id','project_modules.project_id')
@@ -55,12 +55,12 @@ class InterfaceManagerController extends Controller
     }
     //设置交互状态
     public function setInteractiveState($interface_id){
-        $user_id = 1;
+        $user_id = auth()->id();
         $mutual = Mutual::where('interface_id',$interface_id)->first();
         if(isset($mutual)){
             if($mutual->delete()){
                 Logs::logInfo("用id为{$user_id}取消接口id{$interface_id}交互.");
-                return response()->success(200,'修改成功',null);
+                return response()->success(200,'修改成功');
             }
         }else{
             $mutual = new Mutual;
@@ -68,7 +68,7 @@ class InterfaceManagerController extends Controller
             $mutual->front_uesr_id = $user_id;
             if($mutual->save()){
                 Logs::logInfo("用id为{$user_id}给接口id{$interface_id}交互.");
-                return response()->success(200,'修改成功',null);
+                return response()->success(200,'修改成功');
             }
         }
     }

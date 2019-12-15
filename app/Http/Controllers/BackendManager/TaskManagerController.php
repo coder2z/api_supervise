@@ -24,43 +24,39 @@ class TaskManagerController extends Controller
             return \response()->json([
                 "code" => 100,
                 "msg" => "任务分配获取失败",
-                "data" => []
+                "data" => null
             ]);
         }
     }
 
     public function addAssignment(AssignmentRequest $request)
     {
-
         $develop_member = $request->get("user_id");
         $module_id = $request->get("module_id");
-
         $ass = new Assignment();
         $ass->user_id = $develop_member;
         $ass->module_id = $module_id;
-        $ass->created_at = date('Y-m-d h:i:s', time());
         if ($ass->save()) {
             return \response()->json([
                 "code" => 200,
-                "msg" => "任务分配添加成功"
+                "msg" => "任务分配添加成功",
+                "data" => null
             ]);
         } else {
             return \response()->json([
                 "code" => 100,
-                "msg" => "任务分配添加失败"
+                "msg" => "任务分配添加失败",
+                "data" => null
             ]);
         }
     }
 
     public function updateAssignment(AssignmentRequest $request)
     {
-
         $asignments_id = $request->get("asignments_id");
-
         if ($asignments_id != null) {
             $develop_member = $request->get("user_id");
             $module_id = $request->get("module_id");
-
             $ass = Assignment::find($asignments_id);
             $ass->user_id = $develop_member;
             $ass->module_id = $module_id;
@@ -68,19 +64,24 @@ class TaskManagerController extends Controller
             if ($ass->save()) {
                 return \response()->json([
                     "code" => 200,
-                    "msg" => "任务分配更新成功"
+                    "msg" => "任务分配更新成功",
+                    "data" => null
                 ]);
             } else {
                 return \response()->json([
                     "code" => 100,
-                    "msg" => "任务分配更新失败"
+                    "msg" => "任务分配更新失败",
+                    "data" => null
                 ]);
             }
         } else {
             return \response()->json([
                 "code" => 422,
-                "msg" => "asignments_id 不能为空"
-            ]);
+                "msg" => "参数错误！",
+                "data" => [
+                    'asignments_id 不能为空'
+                ]
+            ], 422);
         }
     }
 
@@ -96,18 +97,23 @@ class TaskManagerController extends Controller
             if ($isDelete->delete()) {
                 return \response()->json([
                     "code" => 200,
-                    "msg" => "任务分配删除成功"
+                    "msg" => "任务分配删除成功",
+                    "data" => null
                 ]);
             } else {
                 return \response()->json([
                     "code" => 100,
-                    "msg" => "任务分配删除失败"
+                    "msg" => "任务分配删除失败",
+                    "data" => null
                 ]);
             }
         } else {
             return \response()->json([
                 "code" => 100,
-                "msg" => "asignments_id 不能为空"
+                "msg" => '参数错误！',
+                "data" => [
+                    'asignments_id 不能为空'
+                ]
             ]);
         }
 
