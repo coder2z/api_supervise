@@ -14,6 +14,12 @@ class Annex extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
+ 
+    //根据项目id查找此项目的配置文件 
+    public function findConfigById($project_id)
+    { 
+        return self::where('project_id',$project_id)->select('path','type')->get()->toArray();
+    }
 
     /**
      * @param array $array
