@@ -33,7 +33,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
@@ -59,6 +59,8 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'auth.check' => \App\Http\Middleware\OAuth\VerifyAuth::class,
+        'manage'=>\App\Http\Middleware\CheckManage::class,
         'manage'=>\App\Http\Middleware\Admin\checkManage::class,
+
     ];
 }

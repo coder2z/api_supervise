@@ -26,7 +26,7 @@ class AdminController extends Controller
     //删除用户
     public function DeleteUser(DeleteUser $request)
     {
-        $data = User::DeleteUser($request->ID);
+        $data = User::adminDeleteUser($request->ID);
         if ($data == null) {
             return response()->fail(100, '失败', '用户不存在');
         } else {
@@ -37,7 +37,7 @@ class AdminController extends Controller
     //搜索用户(分页)
     public function SearchUser(Request $request)
     {
-        $data = User::Search($request->info, 8, array('id', 'name', 'access_code', 'phone_number', 'email', 'state'));
+        $data = User::Search($request->info, env('PAGE_NUM'), array('id', 'name', 'access_code', 'phone_number', 'email', 'state'));
         return $data == null ?
             response()->fail(100, '失败') :
             response()->success(200, '成功', $data);
@@ -70,16 +70,16 @@ class AdminController extends Controller
             throw (new HttpResponseException(response()->fail(422, '参数错误！', $validator->errors()->all(), 422)));
         }
         if (!isset(User::find($request->ID)->id)) {
-            return response()->fail(100, '失败', '用户不存在');
+            return response()->fail(100, '失败，用户不存在');
         }
         $info = [$request->ID, $request->name, $request->password, $request->phone, $request->email, $request->access_code, $request->state];
         $data = User::UpdateUserInfo($info);
         if (!$data) {
-            return response()->fail(100, '失败', '修改失败');
+            return response()->fail(100, '修改失败');
         } else {
             $message = $request->name . '被修改了';
             \App\Utils\Logs::logInfo($message, Auth::user());
-            return response()->success(200, '成功', '修改成功');
+            return response()->success(200, '修改成功');
         }
     }
 
