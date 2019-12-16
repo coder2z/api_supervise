@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Middleware\jurisdiction;
-
-use App\Model\User;
 use Closure;
 
 class VerifyPrjectAdmin
