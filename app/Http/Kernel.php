@@ -59,8 +59,10 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'auth.check' => \App\Http\Middleware\OAuth\VerifyAuth::class,
-        'manage'=>\App\Http\Middleware\CheckManage::class,
         'manage'=>\App\Http\Middleware\Admin\checkManage::class,
-
+        'auth.queen'=>\App\Http\Middleware\jurisdiction\VerifyQueen::class,//后端普通
+        'auth.queen.admin'=>\App\Http\Middleware\jurisdiction\VerifyQueenAdmin::class,//后端管理员
+        'auth.front'=>\App\Http\Middleware\jurisdiction\VerifyFront::class,//前端普通
+        'auth.prject.admin'=>\App\Http\Middleware\jurisdiction\VerifyPrjectAdmin::class,//项目管理员
     ];
 }

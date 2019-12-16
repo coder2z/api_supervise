@@ -27,11 +27,12 @@ class ErrorCodeRequest extends FormRequest
     {
         return [
             //2.错误码设置
-            'error_code'    =>  'required',
-            'error_info'    =>  'required|between:2,65',
-            'http_code'     =>  'required|between:2,4'
+            'error_code' => 'required',
+            'error_info' => 'required|between:2,65',
+            'http_code' => 'required|between:2,4'
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         throw (new HttpResponseException(response()->fail(422, '参数错误！', $validator->errors()->all(), 422)));

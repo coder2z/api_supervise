@@ -35,9 +35,8 @@ class ModuleSettingController extends Controller
     }
 
     //编辑模块
-    public function editModule(ModuleRequest $request)
+    public function editModule(ModuleRequest $request, $m_id)
     {
-        $m_id = $request['m_id'];
         $input = array(
             "modules_name" => $request['modules_name'],
             "utility" => $request['utility'],
@@ -51,9 +50,8 @@ class ModuleSettingController extends Controller
     }
 
     //删除模块
-    public function deModule(Request $request)
+    public function deModule($m_id)
     {
-        $m_id = $request['m_id'];
         $module = ProjectModule::deModuleMethod($m_id);
         return $module != null ?
             response()->success(200, '删除模块设置成功') :
