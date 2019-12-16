@@ -2,8 +2,6 @@
 
 namespace App\Model;
 
-use App\Utils\Logs;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,30 +14,15 @@ class Error extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
+
     protected $guarded = [];
-
-
-    //获取错误全部错误码（单用）
-    public static function getStatusCode($project_id)
-    {
-        try {
-            $result = self::where('project_id', $project_id)
-                ->select('id', 'error_code', 'error_info', 'http_code')
-                ->get();
-            return $result;
-        } catch (Exception $e) {
-            Logs::logError('查询错误全部错误码失败!', [$e->getMessage()]);
-            return response()->fail(100, '查询错误全部错误码失败，请重试!', null);
-        }
-    }
-
 
     //2.错误码设置
     //查询错误码
     public static function selectErrorCodeMethod()
     {
         try {
-            return Error::paginate(env('PAGE_NUM'), ['error_code', 'error_info', 'http_code']);
+            return Error::paginate(env('PAGE_NUM'), ['id','error_code', 'error_info', 'http_code','project_id']);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询错误码失败!', [$e->getMessage()]);
             return null;
@@ -62,6 +45,15 @@ class Error extends Model
         }
     }
 
+    //查询单个错误码信息
+    public static function oneSelectErrorCodeMethod($m_id){
+        try{
+            return $rs = Error::find($m_id,['id','project_id', 'error_code', 'error_info','http_code']);
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('查询单个错误码信息失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
     //修改错误码
     public static function editErrorCodeMethod($input, int $e_id)
     {

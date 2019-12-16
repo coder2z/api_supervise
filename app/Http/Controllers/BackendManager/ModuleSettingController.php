@@ -23,6 +23,7 @@ class ModuleSettingController extends Controller
     public function addModule(ModuleRequest $request)
     {
         $input = array(
+            "project_id" =>intval($request['project_id']),
             "modules_name" => $request['modules_name'],
             "utility" => $request['utility'],
             "class_name" => $request['class_name'],
@@ -33,9 +34,15 @@ class ModuleSettingController extends Controller
             response()->success(200, '添加模块设置成功') :
             response()->fail(100, '添加模块设置失败');
     }
-
+    //查询单个模块信息
+    public function oneSelectModule($m_id){
+        $data = ProjectModule::oneSelectModuleMethod($m_id);
+        return $data != null ?
+            response()->success(200, '获取单个信息成功', $data) :
+            response()->fail(100, '获取单个信息失败');
+    }
     //编辑模块
-    public function editModule(ModuleRequest $request, $m_id)
+    public function editModule(ModuleRequest $request,$m_id)
     {
         $input = array(
             "modules_name" => $request['modules_name'],

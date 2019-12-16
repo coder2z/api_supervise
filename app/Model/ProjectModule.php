@@ -2,8 +2,6 @@
 
 namespace App\Model;
 
-use App\Utils\Logs;
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -16,25 +14,12 @@ class ProjectModule extends Model
     //定义禁止操作时间
     public $timestamps = true;
     protected $guarded = [];
-
-    //获取所有的模型名(单用)
-    public static function findModules($project_id){
-        try{
-            $result = self::where('project_id',$project_id)
-                ->select('id','project_id','modules_name','class_name','full_class_name','utility')
-                ->get();
-            return $result;
-        } catch (Exception $e){
-            Logs::logError('获取所有模型信息失败!', [$e->getMessage()]);
-            return response()->fail(100, '获取所有模型信息失败，请重试!', null);
-        }
-    }
     //1.模块设置
     //查询模块
     public static function selectModuleMethod()
     {
         try {
-            return $module = ProjectModule::paginate(env('PAGE_NUM'), ['modules_name', 'class_name', 'full_class_name']);
+            return $module = ProjectModule::paginate(env('PAGE_NUM'), ['id','modules_name', 'class_name', 'full_class_name','project_id']);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询模块失败!', [$e->getMessage()]);
             return null;
@@ -57,7 +42,15 @@ class ProjectModule extends Model
             return null;
         }
     }
-
+    //查询单个模块信息
+    public static function oneSelectModuleMethod($m_id){
+        try{
+            return $module = ProjectModule::find($m_id,['id','modules_name', 'class_name', 'full_class_name','project_id']);
+        }catch (\Exception $e){
+            \App\Utils\Logs::logError('查询单个模块信息信息失败!', [$e->getMessage()]);
+            return null;
+        }
+    }
     //修改模块
     public static function editModuleMethod($input, $m_id)
     {

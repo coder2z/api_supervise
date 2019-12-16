@@ -189,6 +189,8 @@ Route::middleware('auth.check')->group(function () {
             ->where('m_id', '[0-9]+');
         Route::delete('deModule/{m_id}', 'ModuleSettingController@deModule')
             ->where('m_id', '[0-9]+');
+        Route::get('oneSelectModule/{m_id}','ModuleSettingController@oneSelectModule')
+            ->where('m_id','[0-9]+');
     });
     Route::group(['prefix' => 'errCode', 'namespace' => 'BackendManager', 'middleware' => 'auth.queen.admin'], function () {
         Route::get('selectErrorCode', 'ErrorCodeSettingController@selectErrorCode');
@@ -197,6 +199,8 @@ Route::middleware('auth.check')->group(function () {
             ->where('m_id', '[0-9]+');
         Route::delete('deErrorCode/{m_id}', 'ErrorCodeSettingController@deErrorCode')
             ->where('m_id', '[0-9]+');
+        Route::get('oneSelectErrorCode/{m_id}','ErrorCodeSettingController@oneSelectErrorCode')
+            ->where('m_id','[0-9]+');
     });
     Route::get('/ProjectAdmin/getWord', 'ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
     Route::any('url/{project_id}', 'Resposer/UrlController@url')->where('project_id', '[0-9]+'); //模拟响应
