@@ -26,7 +26,7 @@ class ProjectModule extends Model
             return $result;
         } catch (Exception $e){
             Logs::logError('获取所有模型信息失败!', [$e->getMessage()]);
-            return null;
+            return response()->fail(100, '获取所有模型信息失败，请重试!', null);
         }
     }
     //1.模块设置

@@ -19,7 +19,7 @@ class Error extends Model
     protected $guarded = [];
 
 
-    //获取错误全部错误码
+    //获取错误全部错误码（单用）
     public static function getStatusCode($project_id)
     {
         try {
@@ -29,7 +29,7 @@ class Error extends Model
             return $result;
         } catch (Exception $e) {
             Logs::logError('查询错误全部错误码失败!', [$e->getMessage()]);
-            return null;
+            return response()->fail(100, '查询错误全部错误码失败，请重试!', null);
         }
     }
 

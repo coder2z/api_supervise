@@ -26,7 +26,7 @@ class ResponseTable extends Model
         }
         catch (Exception $e){
             Logs::logError('获取接口的响应表信息失败!', [$e->getMessage()]);
-            return null;
+            return response()->fail(100, '获取接口的响应表信息失败，请重试!', null);
         }
     }
 }

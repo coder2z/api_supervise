@@ -15,14 +15,16 @@ class RequestTable extends Model
     //定义禁止操作时间
     public $timestamps = true;
 
-    //获取接口的请求表信息
+    //获取接口的请求表信息（单用）
     public static function getInterfaceRequestMsg($interface_id){
         try{
-            $result = self::where('interface_id',$interface_id)->select('id','request_mode','params')->get();
+            $result = self::where('interface_id',$interface_id)
+                ->select('id','request_mode','params')
+                ->get();
             return $result;
         }catch (Exception $e){
             Logs::logError('获取接口的请求表信息失败!', [$e->getMessage()]);
-            return null;
+            return response()->fail(100, '获取接口的请求表信息失败，请重试!', null);
         }
 
     }

@@ -183,6 +183,7 @@ class ProjectController extends Controller
      */
     private function CheckAdminId($id)
     {
+        auth()->id();
         return $id->access_code == -1 ? true : false;
     }
 

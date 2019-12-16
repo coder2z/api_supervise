@@ -147,11 +147,12 @@ class InterfaceTable extends Model
         try{
             $result = self::where('module_id',$module_id)
                 ->where('state',1)
-                ->select('id as interface_id','function_name')->get();
+                ->select('id as interface_id','function_name')
+                ->get();
             return $result;
         }catch (Exception $e){
-            Logs::logError('查询模型对应的所有方法名!', [$e->getMessage()]);
-            return null;
+            Logs::logError('查询模型对应的所有方法名失败!', [$e->getMessage()]);
+            return response()->fail(100, '查询模型对应的所有方法名失败，请重试!', null);
         }
 
     }
@@ -159,14 +160,15 @@ class InterfaceTable extends Model
     //获取接口详情(单用)
     public static function getInfterfaceInfo($interface_id){
         try{
-            $result = self::where('id',$interface_id)->select('id','interface_name','function_name','route_path')
+            $result = self::where('id',$interface_id)
                 ->where('state',1)
+                ->select('id','interface_name','function_name','route_path')
                 ->get();
             return $result;
         }
         catch (Exception $e){
             Logs::logError('获取接口详情失败!', [$e->getMessage()]);
-            return null;
+            return response()->fail(100, '获取接口详情失败，请重试!', null);
         }
     }
 }
