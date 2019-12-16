@@ -11,9 +11,9 @@ class ModuleSettingController extends Controller
 {
     //项目管理
     //1.模块设置
-    public function selectModule()
+    public function selectModule(Request $request)
     {
-        $data = ProjectModule::selectModuleMethod();
+        $data = ProjectModule::selectModuleMethod($request->project_id);
         return $data != null ?
             response()->success(200, '获取成功', $data) :
             response()->fail(100, '获取失败');

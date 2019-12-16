@@ -22,7 +22,7 @@ class AdminController extends Controller
     public function getUser(Request $request)
     {
         $code = $request->access_code;
-        $data = User::getInfo($code, env('PAGE_NUM'), array('id', 'name', 'access_code', 'phone_number', 'email', 'state'));
+        $data = User::getInfo($code, env('PAGE_NUM'), array('users.id', 'name', 'access_code', 'phone_number', 'email', 'state', 'p.position_code'));
         return $data == null ?
             response()->fail(100, '失败') :
             response()->success(200, '成功', $data);

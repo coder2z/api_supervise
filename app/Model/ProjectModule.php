@@ -16,10 +16,10 @@ class ProjectModule extends Model
     protected $guarded = [];
     //1.模块设置
     //查询模块
-    public static function selectModuleMethod()
+    public static function selectModuleMethod($project_id)
     {
         try {
-            return $module = ProjectModule::paginate(env('PAGE_NUM'), ['id','modules_name', 'class_name', 'full_class_name','project_id']);
+            return $module = ProjectModule::where('project_id',$project_id)->paginate(env('PAGE_NUM'), ['id','modules_name', 'class_name', 'full_class_name','project_id']);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询模块失败!', [$e->getMessage()]);
             return null;

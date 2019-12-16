@@ -345,9 +345,15 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function getInfo($access_code, $page, $array = [])
     {
         try {
-            return $access_code == null ?
-                User::select($array)->where('access_code','!=','1')->paginate($page) :
-                User::select($array)->where('access_code', $access_code)->paginate($page);
+            if ($access_code == null) {
+                $data = User::select($array)
+                    ->where('access_code', '!=', '1')
+                    ->leftjoin('positions as p', 'users.id', '=', 'p.user_id')
+                    ->paginate($page);
+            } else {
+                $data = User::select($array)->where('access_code', $access_code)->paginate($page);
+            }
+            return $data;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
             return null;
