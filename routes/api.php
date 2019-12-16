@@ -198,7 +198,7 @@ Route::middleware('auth.check')->group(function () {
         Route::delete('deErrorCode/{m_id}', 'ErrorCodeSettingController@deErrorCode')
             ->where('m_id', '[0-9]+');
     });
-    Route::get('/ProjectAdmin/getWord','ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
-    Route::any('url', 'Resposer/UrlController@url'); //模拟响应
+    Route::get('/ProjectAdmin/getWord', 'ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
+    Route::any('url/{project_id}', 'Resposer/UrlController@url')->where('project_id', '[0-9]+'); //模拟响应
 });
  

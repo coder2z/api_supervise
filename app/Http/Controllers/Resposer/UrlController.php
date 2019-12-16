@@ -13,9 +13,13 @@ class UrlController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function url(Request $request){
+    public function url(Request $request,$project_id){
         $result = InterfaceTable::leftjoin('request_tables','interface_tables.id','request_tables.interface_id')
-            ->where('route_path',$request->route)->where('interface_tables.state',1)->first();
+            ->leftjoin('project_modules','interface_tables.module_id','project_modules.id')
+            ->leftjoin('projects','project_modules.project_id','projects.id')
+            ->where('projects.id',$project_id)
+            ->where('route_path',$request->route)
+            ->where('interface_tables.state',1)->first();
         if (is_null($result)){
             return response()->fail(100, "没有该接口!");
         }
