@@ -346,7 +346,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     {
         try {
             return $access_code == null ?
-                User::select($array)->paginate($page) :
+                User::select($array)->where('access_code','!=','1')->paginate($page) :
                 User::select($array)->where('access_code', $access_code)->paginate($page);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询用户信息失败!', [$e->getMessage()]);
@@ -368,6 +368,8 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 $message = $user->name . '被删除了';
                 \App\Utils\Logs::logInfo($message, Auth::user());
                 return $user->delete();
+            } elseif ($user->access_code == '1') {
+                return null;
             } else {
                 return null;
             }

@@ -14,6 +14,11 @@ use App\Http\Requests\Admin\DeleteUser;
 class AdminController extends Controller
 {
     //获取某个状态下所有用户(分页)
+    /**
+     * @param Request $request
+     * @return mixed
+     * @throws \Exception
+     */
     public function getUser(Request $request)
     {
         $code = $request->access_code;
