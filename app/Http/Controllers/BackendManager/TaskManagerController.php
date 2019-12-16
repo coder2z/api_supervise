@@ -3,49 +3,71 @@
 namespace App\Http\Controllers\BackendManager;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BackendManage\AssignmentRequest;
+use App\Http\Requests\BackEnd\addAssignmentRequest;
+use App\Http\Requests\BackEnd\asignments_idRequest;
+use App\Http\Requests\BackEnd\AssignmentRequest;
 use App\Model\Assignment;
-use Illuminate\Http\Request;
+use App\Utils\Logs;
 
 
 class TaskManagerController extends Controller
 {
-    //
     public function getAllAssignments()
     {
-        $all = Assignment::all();
-        if ($all != null) {
+        try {
+            $all = Assignment::all();
+            if ($all != null) {
+                return \response()->json([
+                    "code" => 200,
+                    "msg" => "任务分配获取成功",
+                    "data" => $all
+                ]);
+            } else {
+                return \response()->json([
+                    "code" => 100,
+                    "msg" => "任务分配获取失败",
+                    "data" => null
+                ]);
+            }
+        }catch (\Exception $e){
+            Logs::logError("任务分配获取异常," . "Exception:".$e->getMessage());
             return \response()->json([
-                "code" => 200,
-                "msg" => "任务分配获取成功",
-                "data" => $all
-            ]);
-        } else {
-            return \response()->json([
-                "code" => 100,
-                "msg" => "任务分配获取失败",
+                "code" => 500,
+                "msg" => "任务分配获取异常",
                 "data" => null
             ]);
         }
     }
 
-    public function addAssignment(AssignmentRequest $request)
+    public function addAssignment(addAssignmentRequest $request)
     {
-        $develop_member = $request->get("user_id");
-        $module_id = $request->get("module_id");
-        $ass = new Assignment();
-        $ass->user_id = $develop_member;
-        $ass->module_id = $module_id;
-        if ($ass->save()) {
+        try {
+            $develop_member = $request->get("user_id");
+            $module_id = $request->get("module_id");
+
+            $ass = new Assignment();
+            $ass->user_id = $develop_member;
+            $ass->module_id = $module_id;
+
+            if ($ass->save()) {
+                return \response()->json([
+                    "code" => 200,
+                    "msg" => "任务分配添加成功",
+                    "data" => null
+                ]);
+            } else {
+                return \response()->json([
+                    "code" => 100,
+                    "msg" => "任务分配添加失败",
+                    "data" => null
+
+                ]);
+            }
+        }catch (\Exception $e){
+            Logs::logError("任务分配添加异常," . "Exception:".$e->getMessage());
             return \response()->json([
-                "code" => 200,
-                "msg" => "任务分配添加成功",
-                "data" => null
-            ]);
-        } else {
-            return \response()->json([
-                "code" => 100,
-                "msg" => "任务分配添加失败",
+                "code" => 500,
+                "msg" => "任务分配添加异常",
                 "data" => null
             ]);
         }
@@ -53,10 +75,11 @@ class TaskManagerController extends Controller
 
     public function updateAssignment(AssignmentRequest $request)
     {
-        $asignments_id = $request->get("asignments_id");
-        if ($asignments_id != null) {
+        try {
+            $asignments_id = $request->get("asignments_id");
             $develop_member = $request->get("user_id");
             $module_id = $request->get("module_id");
+
             $ass = Assignment::find($asignments_id);
             $ass->user_id = $develop_member;
             $ass->module_id = $module_id;
@@ -74,24 +97,22 @@ class TaskManagerController extends Controller
                     "data" => null
                 ]);
             }
-        } else {
+        }catch (\Exception $e){
+            Logs::logError("任务分配更新异常," . "Exception:".$e->getMessage());
             return \response()->json([
-                "code" => 422,
-                "msg" => "参数错误！",
-                "data" => [
-                    'asignments_id 不能为空'
-                ]
-            ], 422);
+                "code" => 500,
+                "msg" => "任务分配更新异常",
+                "data" => null
+            ]);
         }
     }
 
-    public function deleteAssignment(Request $request)
+    public function deleteAssignment(asignments_idRequest $request)
     {
 
+        try {
+            $deleteID = $request->get("asignments_id");
 
-        $deleteID = $request->get("asignments_id");
-
-        if ($deleteID != null) {
             $isDelete = Assignment::find($deleteID);
 
             if ($isDelete->delete()) {
@@ -107,15 +128,13 @@ class TaskManagerController extends Controller
                     "data" => null
                 ]);
             }
-        } else {
+        }catch (\Exception $e){
+            Logs::logError("任务分配删除异常," . "Exception:".$e->getMessage());
             return \response()->json([
-                "code" => 100,
-                "msg" => '参数错误！',
-                "data" => [
-                    'asignments_id 不能为空'
-                ]
+                "code" => 500,
+                "msg" => "任务分配删除异常",
+                "data" => null
             ]);
         }
-
     }
 }

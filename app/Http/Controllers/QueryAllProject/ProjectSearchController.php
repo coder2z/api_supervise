@@ -10,7 +10,7 @@ use App\Model\Project;
 class ProjectSearchController extends Controller
 {
     //获取所有项目
-    public function getAllProject(Request $request)
+    public function getAllProject()
     {
         $id = Auth()->id();
         $project = new Project();

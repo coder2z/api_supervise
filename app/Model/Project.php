@@ -22,7 +22,8 @@ class Project extends Model
     {
         try {
             $access = Project::leftjoin("project_members as member", "projects.id", "=", "member.project_id")
-                ->where("member.type", $id)
+                ->where("member.user_id",$id)
+                ->where("member.type",0)
                 ->leftjoin("positions as position", "member.user_id", "=", "position.user_id")
                 ->select("projects.id", "projects.name", "projects.discribe", "position.position_code")
                 ->get();
