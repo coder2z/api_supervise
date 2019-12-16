@@ -24,6 +24,12 @@ class AdminController extends Controller
     }
 
     //删除用户
+
+    /**
+     * @param DeleteUser $request
+     * @return mixed
+     * @throws \Exception
+     */
     public function DeleteUser(DeleteUser $request)
     {
         $data = User::adminDeleteUser($request->ID);

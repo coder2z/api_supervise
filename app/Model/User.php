@@ -365,7 +365,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         try {
             $user = User::find($user_id);
             if ($user != null) {
-                $message = $user->name + '被删除了';
+                $message = $user->name . '被删除了';
                 \App\Utils\Logs::logInfo($message, Auth::user());
                 return $user->delete();
             } else {
