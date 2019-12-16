@@ -59,8 +59,7 @@ class ProjectController extends Controller
             Logs::logError('传入id值小于零');
             return response()->fail(100, '传入id值小于零', null);
         }
-        $adminid = Auth::id();
-        if (!self::CheckAdminId($adminid)) {
+        if (!self::CheckAdminId(auth()->user())) {
             return response()->fail(100, '用户权限不够', null);
         }
         $setpro = Project::updateProject(self::projectHandle($request), $id);
@@ -88,8 +87,7 @@ class ProjectController extends Controller
      */
     public function addProject(getProjectRequest $request)
     {
-        $adminid = Auth::id();
-        if (!self::CheckAdminId($adminid)) {
+        if (!self::CheckAdminId(auth()->user())) {
             return response()->fail(100, '用户权限不够', null);
         }
         $project = Project::createProject(self::projectHandle($request));
