@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use App\Http\Requests\Admin\AddUser;
 use App\Http\Requests\Admin\DeleteUser;
+use Validator;
 
 class AdminController extends Controller
 {
@@ -21,8 +22,9 @@ class AdminController extends Controller
      */
     public function getUser(Request $request)
     {
+        $array = ['users.id', 'name', 'phone_number', 'email', 'state', 'p.position_code'];
         $code = $request->access_code;
-        $data = User::getInfo($code, env('PAGE_NUM'), array('users.id', 'name', 'access_code', 'phone_number', 'email', 'state', 'p.position_code'));
+        $data = User::getInfo($code, env('PAGE_NUM'), $array);
         return $data == null ?
             response()->fail(100, '失败') :
             response()->success(200, '成功', $data);
@@ -48,7 +50,8 @@ class AdminController extends Controller
     //搜索用户(分页)
     public function SearchUser(Request $request)
     {
-        $data = User::Search($request->info, env('PAGE_NUM'), array('id', 'name', 'access_code', 'phone_number', 'email', 'state'));
+        $array = ['users.id', 'name', 'phone_number', 'email', 'state', 'p.position_code'];
+        $data = User::Search($request->info, env('PAGE_NUM'),  $array);
         return $data == null ?
             response()->fail(100, '失败') :
             response()->success(200, '成功', $data);
@@ -57,7 +60,7 @@ class AdminController extends Controller
     //获取指定用户信息
     public function ShowUserInfo(DeleteUser $request)
     {
-        $array = ['id', 'name', 'access_code', 'phone_number', 'email', 'state'];
+        $array = ['users.id', 'name', 'access_code', 'phone_number', 'email', 'state', 'p.position_code'];
         $data = User::ShowUserInfo($request->ID, $array);
         if (isset($data[0]->id)) {
             return response()->success(200, '成功', $data);

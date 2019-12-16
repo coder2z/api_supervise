@@ -87,7 +87,6 @@ class TaskManagerController extends Controller
             $ass = Assignment::find($asignments_id);
             $ass->user_id = $develop_member;
             $ass->module_id = $module_id;
-            $ass->updated_at = date('Y-m-d h:i:s', time());
             if ($ass->save()) {
                 return \response()->json([
                     "code" => 200,

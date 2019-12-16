@@ -107,7 +107,7 @@ Route::middleware('auth.check')->group(function () {
      *      1. 上传修改更新文件及GitHub地址
      *      2. 任务管理的人员分配CRUD
      */
-    Route::prefix('')->namespace('BackendManager')->group(function () {
+    Route::prefix('task')->namespace('BackendManager')->group(function () {
         Route::get("getConfigurationFileSetting", "SettingFileController@getConfigurationFileSetting");// {表单验证，try{}catch{},日志}
         Route::post("updateConfigurationFileSetting", "SettingFileController@updateConfigurationFileSetting");//
         Route::post("addConfigurationFileSetting", "SettingFileController@addConfigurationFileSetting");

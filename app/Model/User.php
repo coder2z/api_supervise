@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\DB;
+use App\Model\Position;
 
 /**
  * @method static create(array $array)
@@ -373,6 +374,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             if ($user != null) {
                 $message = $user->name . '被删除了';
                 \App\Utils\Logs::logInfo($message, Auth::user());
+                Position::where('user_id',$user_id)->delete();
                 return $user->delete();
             } elseif ($user->access_code == '1') {
                 return null;
@@ -397,9 +399,21 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function Search($search, $page, $array = [])
     {
         try {
-            return User::select($array)->where('name', 'like', '%' . $search . '%')
+            $data=User::select('users.id')
+                ->where('name', 'like', '%' . $search . '%')
                 ->orwhere('phone_number', 'like', '%' . $search . '%')
-                ->orwhere('email', 'like', '%' . $search . '%')->paginate($page);
+                ->orwhere('email', 'like', '%' . $search . '%')
+                ->leftjoin('positions as p', 'users.id', '=', 'p.user_id')
+                ->get()->toArray();
+            $id[]=array();
+            for($i=0;$i<sizeof($data);$i++){
+                $id[$i]=$data[$i]['id'];
+            }
+            return User::select($array)
+                ->where('access_code', '!=', '1' )
+                ->whereIn('users.id',$id)
+                ->leftjoin('positions as p', 'users.id', '=', 'p.user_id')
+                ->paginate($page);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('搜索用户失败！', [$e->getMessage()]);
             return null;
@@ -416,7 +430,9 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     public static function ShowUserInfo($user_id, $array = [])
     {
         try {
-            return DB::table('users')->select($array)->where('users.id', '=', $user_id)->get();
+            return User::select($array)
+                ->leftjoin('positions as p', 'users.id', '=', 'p.user_id')
+                ->where('users.id', '=', $user_id)->get();
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取用户信息失败！', [$e->getMessage()]);
             return null;
@@ -438,7 +454,6 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                     'name' => $array[1],
                     'phone_number' => $array[3],
                     'email' => $array[4],
-                    'access_code' => $array[5],
                     'state' => $array[6],
                 ]);
             } else {
@@ -447,11 +462,20 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                     'password' => bcrypt($array[2]),
                     'phone_number' => $array[3],
                     'email' => $array[4],
-                    'access_code' => $array[5],
                     'state' => $array[6],
                 ]);
             }
             if ($user) {
+                $temp=Position::where('user_id','=',$array[0]);
+                $res=$temp->first();
+                if($res==null){
+                    $model = new Position();
+                    $model->user_id =$array[0];
+                    $model->position_code = $array[5];
+                    $model->save();
+                }else{
+                    $temp->update(['position_code'=> $array[5]]);
+                }
                 return true;
             } else {
                 return false;
@@ -477,9 +501,13 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             $model->password = bcrypt($array[1]);
             $model->phone_number = $array[2];
             $model->email = $array[3];
-            $model->access_code = $array[4];
             $result = $model->save();
             if ($result) {
+                $id=User::select('id')->where('email',$array[3])->first()->id;
+                $model = new Position();
+                $model->user_id = $id;
+                $model->position_code = $array[4];
+                $model->save();
                 return true;
             } else {
                 return false;
@@ -491,3 +519,4 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     }
 
 }
+
