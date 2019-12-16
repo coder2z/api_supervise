@@ -6,16 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\BackEnd\addAssignmentRequest;
 use App\Http\Requests\BackEnd\asignments_idRequest;
 use App\Http\Requests\BackEnd\AssignmentRequest;
+use App\Http\Requests\BackendManage\getAllAssignmentsRequest;
 use App\Model\Assignment;
 use App\Utils\Logs;
 
 
 class TaskManagerController extends Controller
 {
-    public function getAllAssignments()
+    public function getAllAssignments(getAllAssignmentsRequest $request)
     {
+        $module_id = $request->get("asignments_id");
+
         try {
-            $all = Assignment::all();
+            $all = Assignment::where("module_id",$module_id)->get();
+
             if ($all != null) {
                 return \response()->json([
                     "code" => 200,
