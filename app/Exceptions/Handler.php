@@ -60,7 +60,7 @@ class Handler extends ExceptionHandler
                 return response()->fail(500, '服务器错误!', null, 500);
             }
         } else if ($exception instanceof AuthenticationException) {
-            return response()->fail(403, '没有权限!', null, 401);
+            return response()->fail(403, '没有权限!', null, 403);
         } else {
             \App\Utils\Logs::logError('服务器错误!', [$exception->getMessage()]);
             return response()->fail(500, '服务器错误!', null, 500);

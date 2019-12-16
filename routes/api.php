@@ -31,9 +31,9 @@ Route::get('logs', 'Logs\LogController@logs');//{按照时间降序}
 //zhengruyuan
 Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
     Route::get('getAllUsers', 'UserController@getAllUsers');//显示全部人员    {项目管理员只能看到自己的项目！这里查询的是所有}
-    Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser');//获取要修改的人员 {获取但是使用的model方法是删除}
-    Route::post('updateUser/{id}', 'UserController@updateUser');//修改人员  {这里只能修改类型}
-    Route::get('deleteUser/{id}', 'UserController@deleteUser');//移除人员   {这里应该直接在项目人员表中删除就行，而不是设置项目id为0}
+    Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser')->where('id', '[0-9]+');//获取要修改的人员 {获取但是使用的model方法是删除}
+    Route::post('updateUser/{id}', 'UserController@updateUser')->where('id', '[0-9]+');//修改人员  {这里只能修改类型}
+    Route::get('deleteUser/{id}', 'UserController@deleteUser')->where('id', '[0-9]+');//移除人员   {这里应该直接在项目人员表中删除就行，而不是设置项目id为0}
     Route::get('getUsers', 'UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)   {成员类型是什么？}
     Route::post('searchUser', 'UserController@searchUser');//搜索人员
 });
@@ -41,10 +41,10 @@ Route::prefix('projectadmin')->namespace('ProjectAdmin')->group(function () {
 //易康
 Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->group(function () {
     Route::get('getAllProject', 'ProjectController@getAllProject'); //项目管理员获取全部项目信息
-    Route::get('getProject/{id}', 'ProjectController@getProject'); //获取指定{id}项目信息
-    Route::post('setProject/{id}', 'ProjectController@setProject'); //修改项目
+    Route::get('getProject/{id}', 'ProjectController@getProject')->where('id', '[0-9]+'); //获取指定{id}项目信息
+    Route::post('setProject/{id}', 'ProjectController@setProject')->where('id', '[0-9]+'); //修改项目
     Route::post('addProject', 'ProjectController@addProject'); //添加项目
-    Route::delete('deleteProject/{id}', 'ProjectController@deleteProject'); //删除项目
+    Route::delete('deleteProject/{id}', 'ProjectController@deleteProject')->where('id', '[0-9]+'); //删除项目
 });
 
 //人员管理
@@ -108,7 +108,6 @@ Route::prefix('')->namespace('BackendManager')->group(function () {
     Route::post("updateConfigurationFileSetting", "SettingFileController@updateConfigurationFileSetting");//
     Route::post("addConfigurationFileSetting", "SettingFileController@addConfigurationFileSetting");
     Route::post("uploadConfigurationFile", "SettingFileController@uploadConfigurationFile");//{文件验证}
-
     Route::get("getAllAssignments", "TaskManagerController@getAllAssignments");//{try{}catch{}}
     Route::post("addAssignment", "TaskManagerController@addAssignment");
     Route::post("updateAssignment", "TaskManagerController@updateAssignment");
@@ -122,8 +121,8 @@ Route::prefix('')->namespace('BackendManager')->group(function () {
  */
 Route::prefix('check')->namespace('BackendManager')->group(function () {
     Route::get('get_API_all', 'AccessStateController@getAPIAll');//获取所有接口
-    Route::get('get_API_Info/{interface_id}', 'AccessStateController@getAPIInfoByID');//根据ID获取指定接口的所有信息
-    Route::get('check/{interface_id}', 'AccessStateController@checkAPI');//修改指定接口审核状态
+    Route::get('get_API_Info/{interface_id}', 'AccessStateController@getAPIInfoByID')->where('interface_id', '[0-9]+');//根据ID获取指定接口的所有信息
+    Route::get('check/{interface_id}', 'AccessStateController@checkAPI')->where('interface_id', '[0-9]+');//修改指定接口审核状态
 });
 
 Route::prefix('backend')->namespace('BackEnd')->group(function () {
@@ -147,23 +146,23 @@ Route::prefix('frontend')->namespace('FrontEnd')->group(function () {
     //搜索接口
     Route::get('interface/search', 'InterfaceManagerController@searchInterface');
     //修改接口交互状态
-    Route::put('interface/{interface_id}', 'InterfaceManagerController@setInteractiveState');
+    Route::put('interface/{interface_id}', 'InterfaceManagerController@setInteractiveState')->where('interface_id', '[0-9]+');
 });
 Route::prefix('backend')->namespace('BackEnd')->group(function () {
     //后端新增接口
     Route::post('interface', 'InterfaceManagerController@store');
     //后端获取接口
-    Route::get('interface/{interface_id}', 'InterfaceManagerController@show');
+    Route::get('interface/{interface_id}', 'InterfaceManagerController@show')->where('interface_id', '[0-9]+');
     //后端修改接口
-    Route::put('interface/{interface_id}', 'InterfaceManagerController@save');
+    Route::put('interface/{interface_id}', 'InterfaceManagerController@save')->where('interface_id', '[0-9]+');
     //后端删除接口
-    Route::delete('interface/{interface_id}', 'InterfaceManagerController@destroy');
+    Route::delete('interface/{interface_id}', 'InterfaceManagerController@destroy')->where('interface_id', '[0-9]+');
     //后端批量删除接口
     Route::delete('interfaces', 'InterfaceManagerController@destroySelect');
     //后端查看模块名
-    Route::get('module_names/{projectId}', 'InterfaceManagerController@showModuleName');
+    Route::get('module_names/{projectId}', 'InterfaceManagerController@showModuleName')->where('projectId', '[0-9]+');
     //后端查看错误码
-    Route::get('error_code/{projectId}', 'InterfaceManagerController@showErrorCode');
+    Route::get('error_code/{projectId}', 'InterfaceManagerController@showErrorCode')->where('projectId', '[0-9]+');
 });
 
 /**
@@ -174,14 +173,13 @@ Route::prefix('backend')->namespace('BackEnd')->group(function () {
 Route::group(['prefix' => 'module', 'namespace' => 'BackendManager'], function () {
     Route::get('selectModule', 'ModuleSettingController@selectModule');
     Route::post('addModule', 'ModuleSettingController@addModule');
-    Route::put('editModule', 'ModuleSettingController@editModule');
-    Route::delete('deModule', 'ModuleSettingController@deModule');
+    Route::put('editModule/{m_id}', 'ModuleSettingController@editModule')->where('m_id', '[0-9]+');
+    Route::delete('deModule/{m_id}', 'ModuleSettingController@deModule')->where('m_id', '[0-9]+');
 });
-
 Route::group(['prefix' => 'errCode', 'namespace' => 'BackendManager'], function () {
     Route::get('selectErrorCode', 'ErrorCodeSettingController@selectErrorCode');
     Route::post('addErrorCode', 'ErrorCodeSettingController@addErrorCode');
-    Route::put('editErrorCode', 'ErrorCodeSettingController@editErrorCode');//{m_id 验证}
-    Route::delete('deErrorCode', 'ErrorCodeSettingController@deErrorCode');//{m_id 验证}
+    Route::put('editErrorCode/{m_id}', 'ErrorCodeSettingController@editErrorCode')->where('m_id', '[0-9]+');//{m_id 验证}
+    Route::delete('deErrorCode/{m_id}', 'ErrorCodeSettingController@deErrorCode')->where('m_id', '[0-9]+');//{m_id 验证}
 });
  
