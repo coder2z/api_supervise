@@ -97,6 +97,9 @@ class WordController extends Controller
                 $table->addCell(4000)->addText("错误说明", $fontStylebold);
                 $table->addCell(2000)->addText("http状态码", $fontStylebold);
                 $errorCode = Error::getStatusCode($project_id);
+                if($errorCode->isEmpty()){
+                    return response()->fail(100, '错误码信息不完整,请填写相关项目信息后重试！', null);
+                }
                 foreach ($errorCode as $errorcode) {
                     if (is_null($errorCode)) {
                         $table->addRow();
