@@ -149,4 +149,17 @@ class Project extends Model
             return false;
         }
     }
+
+    //获取项目信息(单用)
+    public static function findProjectMsg($project_id){
+        try{
+            $result = self::where('id',$project_id)->select('id','name','discribe')->get();
+            return $result;
+        } catch (Exception $e){
+            Logs::logError('查询项目信息失败!', [$e->getMessage()]);
+            return response()->fail(100, '查询项目信息失败，请重试!', null);
+        }
+
+    }
+
 }

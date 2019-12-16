@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use App\Utils\Logs;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -14,8 +16,23 @@ class Error extends Model
     protected $primaryKey = 'id';
     //定义禁止操作时间
     public $timestamps = true;
-
     protected $guarded = [];
+
+
+    //获取错误全部错误码（单用）
+    public static function getStatusCode($project_id)
+    {
+        try {
+            $result = self::where('project_id', $project_id)
+                ->select('id', 'error_code', 'error_info', 'http_code')
+                ->get();
+            return $result;
+        } catch (Exception $e) {
+            Logs::logError('查询错误全部错误码失败!', [$e->getMessage()]);
+            return response()->fail(100, '查询错误全部错误码失败，请重试!', null);
+        }
+    }
+
 
     //2.错误码设置
     //查询错误码

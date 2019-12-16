@@ -133,6 +133,7 @@ return [
         'old_password' => '旧密码',
         'new_password' => '新密码',
         'new_password_confirmation' => '确认密码',
+        'project_id'                      =>'项目id',
 
     ],
 ];
