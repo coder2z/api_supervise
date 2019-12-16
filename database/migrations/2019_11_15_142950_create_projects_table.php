@@ -21,7 +21,7 @@ class CreateProjectsTable extends Migration
             $table->foreign('amdin_user_id')//外键user表主键id,设置restrict
                     ->references('id')->on('users');
                     // ->ondelete('cascade');
-            $table->string('pre_url')->comment('项目url前缀');//项目url前缀
+            $table->string('pre_url')->comment('项目url前缀')->nullable();//项目url前缀
             $table->timestamps();
         });
     }

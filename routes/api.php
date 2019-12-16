@@ -52,7 +52,7 @@ Route::middleware('auth.check')->group(function () {
     });
 
 //人员管理
-    Route::namespace('Admin')->middleware('manage')->group(function () {
+    Route::prefix('Admin')->namespace('Admin')->middleware('manage')->group(function () {
         Route::get('getUser', 'AdminController@getUser');//获取某个状态下的所有用户 {getInfo 模型里面没有}
         Route::get('DeleteUser', 'AdminController@DeleteUser');//删除用户 {模型调用 DeleteUser   被用过了}
         Route::post('SearchUser', 'AdminController@SearchUser');//搜索用户  {Search 模型里面没有}

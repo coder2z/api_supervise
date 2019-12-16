@@ -26,7 +26,7 @@ class Project extends Model
                 ->where("member.type",0)
                 ->leftjoin("positions as position", "member.user_id", "=", "position.user_id")
                 ->select("projects.id", "projects.name", "projects.discribe", "position.position_code")
-                ->get();
+                ->paginate(env('PAGE_NUM'));
             return $access;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有项目失败!', [$e->getMessage()]);
