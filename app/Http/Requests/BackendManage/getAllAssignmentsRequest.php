@@ -17,7 +17,7 @@ class getAllAssignmentsRequest extends FormRequest
     public function rules()
     {
         return [
-            'asignments_id' => 'required|integer',
+            'project_id' => 'required|integer',
         ];
     }
 

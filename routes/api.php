@@ -116,6 +116,7 @@ Route::middleware('auth.check')->group(function () {
         Route::post("addAssignment", "TaskManagerController@addAssignment");
         Route::post("updateAssignment", "TaskManagerController@updateAssignment");
         Route::get("deleteAssignment", "TaskManagerController@deleteAssignment");
+        Route::get("getTwoPm","TaskManagerController@getTwoPm");
     });
 
     /**

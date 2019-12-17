@@ -8,23 +8,69 @@ use App\Http\Requests\BackEnd\asignments_idRequest;
 use App\Http\Requests\BackEnd\AssignmentRequest;
 use App\Http\Requests\BackendManage\getAllAssignmentsRequest;
 use App\Model\Assignment;
+use App\Model\ProjectModule;
 use App\Utils\Logs;
 
 
 class TaskManagerController extends Controller
 {
-    public function getAllAssignments(getAllAssignmentsRequest $request)
-    {
-        $module_id = $request->get("asignments_id");
+    public function getTwoPm(getAllAssignmentsRequest $request){
+
 
         try {
-            $all = Assignment::where("module_id",$module_id)->get();
+            $project_id = $request->get("project_id");
+            $PModule =ProjectModule::where("project_id",$project_id)->get(["class_name","id"]);
+            $PMember = ProjectMember::where("project_id",$project_id)->get(["user_id"]);
 
-            if ($all != null) {
+
+            $tmp1 = null;
+            for ($i = 0;$i<count($PMember);$i++){
+                $tmp1[$i]["name"] = json_decode(User::where("id", $PMember[$i]->user_id)->get(["name"]), true)[0]["name"];
+                $tmp1[$i]["user_id"] = json_decode($PMember[$i]->user_id);
+            }
+            $tmp = null;
+            $tmp=[
+                "allProjectModule"=>$PModule,
+                "allProjectMember"=>$tmp1
+            ];
+            return \response()->json([
+                "code" => 200,
+                "msg" => "获取项目成员和模块成功",
+                "data" => $tmp
+            ]);
+
+        }catch (\Exception $exception){
+            Logs::logError("获取项目成员和模块异常," . "Exception:" . $exception->getMessage());
+            return \response()->json([
+                "code" => 500,
+                "msg" => "获取项目成员和模块异常",
+                "data" => null
+            ]);
+        }
+    }
+    public function getAllAssignments(getAllAssignmentsRequest $request)
+    {
+
+        try {
+
+            $project_id = $request->get("project_id");
+
+            $all = ProjectModule::where("project_id", $project_id)->rightJoin('assignments', 'assignments.module_id',
+                '=', 'project_modules.id')->get();
+
+            $tmp = null;
+            for ($i = 0; $i < count($all); $i++) {
+                $tmp[$i]["module_id"] = $all[$i]->module_id;
+                $tmp[$i]["user_id"] = $all[$i]->user_id;
+                $tmp[$i]["class_name"] = $all[$i]->class_name;
+                $tmp[$i]["name "] = json_decode(User::where("id", $all[$i]->user_id)->get(["name"]), true)[0]["name"];
+            }
+
+            if ($tmp != null) {
                 return \response()->json([
                     "code" => 200,
                     "msg" => "任务分配获取成功",
-                    "data" => $all
+                    "data" => $tmp
                 ]);
             } else {
                 return \response()->json([
@@ -33,12 +79,12 @@ class TaskManagerController extends Controller
                     "data" => null
                 ]);
             }
-        }catch (\Exception $e){
-            Logs::logError("任务分配获取异常," . "Exception:".$e->getMessage());
+        } catch (\Exception $e) {
+            Logs::logError("任务分配获取异常," . "Exception:" . $e->getMessage());
             return \response()->json([
                 "code" => 500,
                 "msg" => "任务分配获取异常",
-                "data" => null
+                "data" => []
             ]);
         }
     }
