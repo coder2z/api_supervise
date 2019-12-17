@@ -22,8 +22,8 @@ class Project extends Model
     {
         try {
             $access = Project::leftjoin("project_members as member", "projects.id", "=", "member.project_id")
-                ->where("member.user_id",$id)
-                ->where("member.type",0)
+                ->where("member.user_id", $id)
+                ->where("member.type", 0)
                 ->leftjoin("positions as position", "member.user_id", "=", "position.user_id")
                 ->select("projects.id", "projects.name", "projects.discribe", "position.position_code")
                 ->paginate(env('PAGE_NUM'));
@@ -32,7 +32,6 @@ class Project extends Model
             \App\Utils\Logs::logError('获取所有项目失败!', [$e->getMessage()]);
             return null;
         }
-
     }
 
     //根据项目id查询项目的github地址
@@ -78,10 +77,18 @@ class Project extends Model
     {
         try {
             $result = self::where('id', $id)->select('id', 'name', 'discribe')->first();
-            $word = Annex::where('project_id', $id)->where('type', 2)->select('path')->first()->path;
-            $rp = Annex::where('project_id', $id)->where('type', 1)->select('path')->first()->path;
-            $result['word_path'] = trim(strrchr($word, '/'), '/');
-            $result['rp_path'] = trim(strrchr($rp, '/'), '/');
+            $word = Annex::where('project_id', $id)->where('type', 2)->select('path')->first();
+            if (!$word) {
+                $result['word_path'] = '没有上传word文档';
+            } else {
+                $result['word_path'] = $word;
+            }
+            $rp = Annex::where('project_id', $id)->where('type', 1)->select('path')->first();
+            if (!$rp) {
+                $result['rp_path'] = '没有上传word文档';
+            } else {
+                $result['word_path'] = $rp;
+            }
             return $result;
         } catch (Exception $e) {
             Logs::logError('查询项目信息失败！', [$e->getMessage()]);
@@ -151,15 +158,14 @@ class Project extends Model
     }
 
     //获取项目信息(单用)
-    public static function findProjectMsg($project_id){
-        try{
-            $result = self::where('id',$project_id)->select('id','name','discribe')->get();
+    public static function findProjectMsg($project_id)
+    {
+        try {
+            $result = self::where('id', $project_id)->select('id', 'name', 'discribe')->get();
             return $result;
-        } catch (Exception $e){
+        } catch (Exception $e) {
             Logs::logError('查询项目信息失败!', [$e->getMessage()]);
             return response()->fail(100, '查询项目信息失败，请重试!', null);
         }
-
     }
-
 }
