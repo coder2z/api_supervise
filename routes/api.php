@@ -148,10 +148,10 @@ Route::middleware('auth.check')->group(function () {
      *     2. 后端人员对接口进行增删查改，批量删除
      */
     Route::prefix('frontend')->namespace('FrontEnd')->middleware('auth.front')->group(function () {
-        //通过user_id获取接口列表
-        Route::get('interface', 'InterfaceManagerController@index');//{try{}catch{}}
         //搜索接口
-        Route::get('interface/search', 'InterfaceManagerController@searchInterface');
+        Route::get('interface/search','InterfaceManagerController@searchInterface');
+        //通过user_id获取接口列表
+        Route::get('interface/{project_id}','InterfaceManagerController@index');
         //修改接口交互状态
         Route::put('interface/{interface_id}', 'InterfaceManagerController@setInteractiveState')
             ->where('interface_id', '[0-9]+');
