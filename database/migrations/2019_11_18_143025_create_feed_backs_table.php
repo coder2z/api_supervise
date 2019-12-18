@@ -24,7 +24,7 @@ class CreateFeedBacksTable extends Migration
             $table->integer('interface_id')->comment('interface表主键id')->nullable();
 
             $table->char('broadcast', 2)->default('-1')->comment('职位代码 0前端 1后端 -1未规定');//职位代码 0前端 1后端 -1未规定
-            $table->text('content')->comment('反馈内容');//反馈内容
+            $table->json('content')->comment('反馈内容');//反馈内容
 
             $table->timestamps();
         });

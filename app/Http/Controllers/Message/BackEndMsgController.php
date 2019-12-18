@@ -18,9 +18,14 @@ class BackEndMsgController extends Controller
     public function showMessage()
     {
         try {
-            $data = FeedBack::select('content->title as title', 'from_user_id', 'to_user_id', 'content->type as type', 'updated_at', 'created_at')->get()->toArray();
+            $data = FeedBack::join('users as userFrom','from_uesr_id','userFrom.id')
+                ->join('users as userTo','to_user_id','userTo.id')
+                ->select('content->title as title', 'userFrom.name as nameFrom', 'userTo.name as nameTo', 'content->type as type', 'feed_backs.updated_at', 'feed_backs.created_at')
+                ->get()
+                ->toArray();
             return response()->success(200, "成功", $data);
         } catch (\Exception $e) {
+            \App\Utils\Logs::logError('展示所有信息失败!', [$e->getMessage()]);
             return response()->fail(100, "失败");
         }
     }
@@ -29,10 +34,15 @@ class BackEndMsgController extends Controller
     public function fromMessage()
     {
         try {
-            $id = Auth::id;
-            $data = FeedBack::select('content->title as title', 'from_user_id', 'to_user_id', 'content->type as type', 'updated_at', 'created_at')->where('from_user_id', $id)->get()->toArray();
+            $id = auth()->id();
+            $data = FeedBack::join('users as userFrom','from_uesr_id','userFrom.id')
+                ->join('users as userTo','to_user_id','userTo.id')
+                ->select('content->title as title', 'userFrom.name as nameFrom', 'userTo.name as nameTo', 'content->type as type', 'feed_backs.updated_at', 'feed_backs.created_at')
+                ->where('from_user_id', $id)
+                ->get()->toArray();
             return response()->success(200, "成功", $data);
         } catch (\Exception $e) {
+            \App\Utils\Logs::logError('我反馈的信息信息失败!', [$e->getMessage()]);
             return response()->fail(100, "失败");
         }
     }
@@ -41,10 +51,15 @@ class BackEndMsgController extends Controller
     public function toMessage()
     {
         try {
-            $id = Auth::id();
-            $data = FeedBack::select('content->title as title', 'from_user_id', 'to_user_id', 'content->type as type', 'updated_at', 'created_at')->where('to_user_id', $id)->get()->toArray();
+            $id = auth()->id();
+            $data = FeedBack::join('users as userFrom','from_uesr_id','userFrom.id')
+                ->join('users as userTo','to_user_id','userTo.id')
+                ->select('content->title as title', 'userFrom.name as nameFrom', 'userTo.name as nameTo', 'content->type as type', 'feed_backs.updated_at', 'feed_backs.created_at')
+                ->where('to_user_id', $id)
+                ->get()->toArray();
             return response()->success(200, "成功", $data);
         } catch (\Exception $e) {
+            \App\Utils\Logs::logError('发送给我的信息失败!', [$e->getMessage()]);
             return response()->fail(100, "失败");
         }
     }

@@ -29,8 +29,8 @@ class ModuleRequest extends FormRequest
             //module、errorcode验证
             'modules_name' => 'required|string|max:60',
             'utility' => 'required|string|max:60',
-            'class_name' => 'required|string|between:4,40',
-            'full_class_name' => 'required|string|between:4,40'
+            'class_name' => 'required|string|between:4,100',
+            'full_class_name' => 'required|string|between:4,100'
         ];
     }
     protected function failedValidation(Validator $validator)
