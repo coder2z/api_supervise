@@ -52,7 +52,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Validator::extend('check_code', function ($attribute, $value,$parameters, $validator) {
-            if($value=='-1'||$value=='0'){
+            if($value=='1'||$value=='0'){
                 return true;
             }else{
                 return false;

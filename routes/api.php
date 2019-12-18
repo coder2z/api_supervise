@@ -204,6 +204,6 @@ Route::middleware('auth.check')->group(function () {
             ->where('m_id','[0-9]+');
     });
     Route::get('/ProjectAdmin/getWord', 'ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
-    Route::any('url/{project_id}', 'Resposer/UrlController@url')->where('project_id', '[0-9]+'); //模拟响应
+    Route::any('url/{project_id}', 'Resposer\UrlController@url')->where('project_id', '[0-9]+'); //模拟响应
 });
  

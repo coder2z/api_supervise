@@ -9,14 +9,14 @@ class Position extends Model
     //定义模型关联的数据表
     protected $table = 'positions';
     //定义主键
-    protected $primaryKey = '';
+    protected $primaryKey = 'id';
     //定义禁止操作时间
 
 
-    protected $dispatchesEvents = [
-        'saved' => UserSaved::class,
-        'deleted' => UserDeleted::class,
-    ];
+//    protected $dispatchesEvents = [
+//        'saved' => UserSaved::class,
+//        'deleted' => UserDeleted::class,
+//    ];
     public $timestamps = true;
     /**
      * 设置批量赋值

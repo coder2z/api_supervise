@@ -188,7 +188,7 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
                 ->where('t1.id', $id)
                 ->where('t3.id', $request->pid)
                 ->update([
-                    't4.position_code' => $request->pcode
+                    't2.type' => $request->pcode
                 ]);
             return $res;
         } catch (\Exception $e) {
