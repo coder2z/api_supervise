@@ -178,7 +178,7 @@ Route::middleware('auth.check')->group(function () {
     });
 
     Route::prefix('backend')->namespace('BackEnd')->group(function () {
-        //后端获取接口
+        //获取接口
         Route::get('interface/{interface_id}', 'InterfaceManagerController@show')
             ->where('interface_id', '[0-9]+');
     });
@@ -210,4 +210,3 @@ Route::middleware('auth.check')->group(function () {
     Route::get('/ProjectAdmin/getWord', 'ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
     Route::any('url/{project_id}', 'Resposer\UrlController@url')->where('project_id', '[0-9]+'); //模拟响应
 });
- 
