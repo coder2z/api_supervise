@@ -59,7 +59,7 @@ Route::middleware('auth.check')->group(function () {
         Route::get('ShowUserInfo', 'AdminController@ShowUserInfo');//展示用户信息 {ShowUserInfo   模型里面没有}
         Route::post('UpdateUserInfo', 'AdminController@UpdateUserInfo');//修改用户信息    {UpdateUserInfo 模型里面没有}
         Route::post('AddUser', 'AdminController@AddUser');//新增用户信息{AddUser  模型里面没有}
-        Route::get('SetManage','AdminController@SetManage');//设置项目管理员
+        Route::get('SetManage', 'AdminController@SetManage');//设置项目管理员
     });
 
 //倪煜
@@ -117,7 +117,7 @@ Route::middleware('auth.check')->group(function () {
         Route::post("addAssignment", "TaskManagerController@addAssignment");
         Route::post("updateAssignment", "TaskManagerController@updateAssignment");
         Route::get("deleteAssignment", "TaskManagerController@deleteAssignment");
-        Route::get("getTwoPm","TaskManagerController@getTwoPm");
+        Route::get("getTwoPm", "TaskManagerController@getTwoPm");
     });
 
     /**
@@ -148,21 +148,19 @@ Route::middleware('auth.check')->group(function () {
      *     1. 前端人员对接口进行查询、搜索、添加是否交互
      *     2. 后端人员对接口进行增删查改，批量删除
      */
-    Route::prefix('frontend')->namespace('FrontEnd')->middleware('auth.front')->group(function () {
+    Route::prefix('frontend')->namespace('FrontEnd')->group(function () {
         //搜索接口
-        Route::get('interface/search','InterfaceManagerController@searchInterface');
+        Route::get('interface/search', 'InterfaceManagerController@searchInterface');
         //通过user_id获取接口列表
-        Route::get('interface/{project_id}','InterfaceManagerController@index');
+        Route::get('interface/{project_id}', 'InterfaceManagerController@index');
         //修改接口交互状态
         Route::put('interface/{interface_id}', 'InterfaceManagerController@setInteractiveState')
+            ->middleware('auth.queen')
             ->where('interface_id', '[0-9]+');
     });
     Route::prefix('backend')->namespace('BackEnd')->middleware('auth.queen')->group(function () {
         //后端新增接口
         Route::post('interface', 'InterfaceManagerController@store');
-        //后端获取接口
-        Route::get('interface/{interface_id}', 'InterfaceManagerController@show')
-            ->where('interface_id', '[0-9]+');
         //后端修改接口
         Route::put('interface/{interface_id}', 'InterfaceManagerController@save')
             ->where('interface_id', '[0-9]+');
@@ -179,6 +177,11 @@ Route::middleware('auth.check')->group(function () {
             ->where('projectId', '[0-9]+');
     });
 
+    Route::prefix('backend')->namespace('BackEnd')->group(function () {
+        //后端获取接口
+        Route::get('interface/{interface_id}', 'InterfaceManagerController@show')
+            ->where('interface_id', '[0-9]+');
+    });
     /**
      * 欧阳生林 ～后端管理员
      *       1. 模块设置.
@@ -191,8 +194,8 @@ Route::middleware('auth.check')->group(function () {
             ->where('m_id', '[0-9]+');
         Route::delete('deModule/{m_id}', 'ModuleSettingController@deModule')
             ->where('m_id', '[0-9]+');
-        Route::get('oneSelectModule/{m_id}','ModuleSettingController@oneSelectModule')
-            ->where('m_id','[0-9]+');
+        Route::get('oneSelectModule/{m_id}', 'ModuleSettingController@oneSelectModule')
+            ->where('m_id', '[0-9]+');
     });
     Route::group(['prefix' => 'errCode', 'namespace' => 'BackendManager', 'middleware' => 'auth.queen.admin'], function () {
         Route::get('selectErrorCode', 'ErrorCodeSettingController@selectErrorCode');
@@ -201,8 +204,8 @@ Route::middleware('auth.check')->group(function () {
             ->where('m_id', '[0-9]+');
         Route::delete('deErrorCode/{m_id}', 'ErrorCodeSettingController@deErrorCode')
             ->where('m_id', '[0-9]+');
-        Route::get('oneSelectErrorCode/{m_id}','ErrorCodeSettingController@oneSelectErrorCode')
-            ->where('m_id','[0-9]+');
+        Route::get('oneSelectErrorCode/{m_id}', 'ErrorCodeSettingController@oneSelectErrorCode')
+            ->where('m_id', '[0-9]+');
     });
     Route::get('/ProjectAdmin/getWord', 'ProjectAdmin\WordController@getWord')->middleware('auth.prject.admin');
     Route::any('url/{project_id}', 'Resposer\UrlController@url')->where('project_id', '[0-9]+'); //模拟响应

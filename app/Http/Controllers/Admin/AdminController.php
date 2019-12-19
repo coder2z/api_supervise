@@ -24,7 +24,7 @@ class AdminController extends Controller
      */
     public function getUser(Request $request)
     {
-        $array = ['users.id', 'name', 'phone_number', 'email', 'state', 'p.position_code'];
+        $array = ['users.id', 'name', 'phone_number', 'email', 'state', 'p.position_code','access_code'];
         $code = $request->access_code;
         $data = User::getInfo($code, env('PAGE_NUM'), $array);
         return $data == null ?

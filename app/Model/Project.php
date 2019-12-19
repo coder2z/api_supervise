@@ -88,7 +88,7 @@ class Project extends Model
             if (!$rp) {
                 $result['rp_path'] = '没有上传原型图文档';
             } else {
-                $result['word_path'] = $rp->path;
+                $result['rp_path'] = $rp->path;
             }
             return $result;
         } catch (Exception $e) {

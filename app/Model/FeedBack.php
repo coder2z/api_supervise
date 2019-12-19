@@ -38,16 +38,28 @@ class FeedBack extends Model
                 })
                     ->paginate(env('PAGE_NUM'));
                 foreach ($info as $item) {
-                    $user = User::find($item->from_user_id);
+                    $user = User::find($item->from_uesr_id);
                     if ($user == null) $user["name"] = "用户已注销";
-                    $json_decode = json_decode($item->content);
-                    $data[$i++] = array(
+                    $json_decode = json_decode(json_encode($item->content));
+                    $data['data'][$i++] = array(
                         "name" => $json_decode->title,
                         "type" => $json_decode->type,
                         "from" => $user["name"],
                         "to" => Auth::user()->name,
                     );
                 }
+                $info=json_decode(json_encode($info));
+                $data['current_page']=$info->current_page;
+                $data['first_page_url']=$info->first_page_url;
+                $data['from']=$info->from;
+                $data['last_page']=$info->last_page;
+                $data['last_page_url']=$info->last_page_url;
+                $data['next_page_url']=$info->next_page_url;
+                $data['path']=$info->path;
+                $data['per_page']=$info->per_page;
+                $data['prev_page_url']=$info->prev_page_url;
+                $data['to']=$info->to;
+                $data['total']=$info->total;
                 return $data;
             } else return null;
         } catch (\Exception $exception) {
