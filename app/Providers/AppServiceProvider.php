@@ -16,57 +16,64 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Validator::extend('check_backend_state', function ($attribute, $value,$parameters, $validator) {
-            if($value=='1'||$value=='2'){
+        Validator::extend('check_backend_state', function ($attribute, $value, $parameters, $validator) {
+            if ($value == '1' || $value == '2') {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         });
 
-        Validator::extend('check_front_develop', function ($attribute, $value,$parameters, $validator) {
-            if($value==null){
+        Validator::extend('check_front_develop', function ($attribute, $value, $parameters, $validator) {
+            if ($value == null) {
                 return true;
-            }else{
+            } else {
                 return preg_match('/^[1-9][0-9]*$/', $value);
             }
         });
-        Validator::extend('check_front_numeric', function ($attribute, $value,$parameters, $validator) {
-            if($value==null){
+        Validator::extend('check_front_numeric', function ($attribute, $value, $parameters, $validator) {
+            if ($value == null) {
                 return true;
-            }else{
+            } else {
                 return preg_match('/^[1-9][0-9]*$/', $value);
             }
         });
 
 
-        Validator::extend('check_password', function ($attribute, $value,$parameters, $validator) {
-            if($value==null){
+        Validator::extend('check_password', function ($attribute, $value, $parameters, $validator) {
+            if ($value == null) {
                 return true;
-            }else{
-                if(strlen($value)>16){
+            } else {
+                if (strlen($value) > 16) {
                     return false;
                 }
-                return preg_match('/(a-z|[^a-z]){6,16}/',$value);
+                return preg_match('/(a-z|[^a-z]){6,16}/', $value);
             }
         });
 
-        Validator::extend('check_code', function ($attribute, $value,$parameters, $validator) {
-            if($value=='1'||$value=='0'){
+        Validator::extend('check_code', function ($attribute, $value, $parameters, $validator) {
+            if ($value == '1' || $value == '0') {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         });
 
-        Validator::extend('check_state', function ($attribute, $value,$parameters, $validator) {
-            if($value=='1'||$value=='0'){
+        Validator::extend('check_state', function ($attribute, $value, $parameters, $validator) {
+            if ($value == '1' || $value == '0') {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         });
 
+        Validator::extend('check_access_code', function ($attribute, $value, $parameters, $validator) {
+            if ($value == '-1' || $value == '0') {
+                return true;
+            } else {
+                return false;
+            }
+        });
     }
 
     /**

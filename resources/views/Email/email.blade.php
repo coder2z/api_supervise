@@ -3,6 +3,6 @@
 <div id="u510" class="ax_default label">
     <div id="u510_div" class=""></div>
     <div id="u510_text" class="text ">
-        <p><span>[问题描述]：{{$content["question"]}}</span></p>
+        <p><span>[问题描述]：{{$content["body"]}}</span></p>
     </div>
 </div>

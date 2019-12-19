@@ -522,5 +522,28 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
         }
     }
 
+    public static function SetManage($id, $code)
+    {
+        try {
+            $user = User::find($id);
+            if ($user == null) {
+                return -1;
+            }
+            if ($user->access_code == '1') {
+                return -2;
+            }
+            $user_code = $user->update(['access_code' => $code]);
+            if ($user_code) {
+                return 1;
+            } else {
+                return -3;
+            }
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('修改项目管理员失败失败！', [$e->getMessage()]);
+            return false;
+        }
+
+    }
+
 }
 

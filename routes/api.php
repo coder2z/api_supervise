@@ -59,11 +59,12 @@ Route::middleware('auth.check')->group(function () {
         Route::get('ShowUserInfo', 'AdminController@ShowUserInfo');//展示用户信息 {ShowUserInfo   模型里面没有}
         Route::post('UpdateUserInfo', 'AdminController@UpdateUserInfo');//修改用户信息    {UpdateUserInfo 模型里面没有}
         Route::post('AddUser', 'AdminController@AddUser');//新增用户信息{AddUser  模型里面没有}
+        Route::get('SetManage','AdminController@SetManage');//设置项目管理员
     });
 
 //倪煜
     Route::get("/MyMessage", "Message\FrontEndMsgController@MyMessage");//获取反馈信息列表
-    Route::get("/SendMail_All_Back", "Message\FrontEndMsgController@SendMail_All_Back");//前端增加所在项目反馈信息并发送邮件（项目全部后端）
+    Route::post("/SendMail_All_Back", "Message\FrontEndMsgController@SendMail_All_Back");//前端增加所在项目反馈信息并发送邮件（项目全部后端）
 
 //刘志伟
     Route::prefix('Message')->namespace('Message')->group(function () {

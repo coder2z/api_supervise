@@ -83,6 +83,7 @@ return [
     'check_password' => '修改密码的长度需要在6-16位之间',
     'check_code' => '请检查权限码',
     'check_state' => '请检查状态码',
+    'check_access_code' => '请检查权限码',
     /*
 |--------------------------------------------------------------------------
 | Custom Validation Language Lines
@@ -133,6 +134,5 @@ return [
         'new_password' => '新密码',
         'new_password_confirmation' => '确认密码',
         'project_id' => '项目id',
-
     ],
 ];

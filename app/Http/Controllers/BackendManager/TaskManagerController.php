@@ -8,7 +8,9 @@ use App\Http\Requests\BackEnd\asignments_idRequest;
 use App\Http\Requests\BackEnd\AssignmentRequest;
 use App\Http\Requests\BackendManage\getAllAssignmentsRequest;
 use App\Model\Assignment;
+use App\Model\ProjectMember;
 use App\Model\ProjectModule;
+use App\Model\User;
 use App\Utils\Logs;
 
 

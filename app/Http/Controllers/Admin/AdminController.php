@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\SetManage;
+use App\Model\InterfaceTable;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -51,7 +53,7 @@ class AdminController extends Controller
     public function SearchUser(Request $request)
     {
         $array = ['users.id', 'name', 'phone_number', 'email', 'state', 'p.position_code'];
-        $data = User::Search($request->info, env('PAGE_NUM'),  $array);
+        $data = User::Search($request->info, env('PAGE_NUM'), $array);
         return $data == null ?
             response()->fail(100, '失败') :
             response()->success(200, '成功', $data);
@@ -109,5 +111,23 @@ class AdminController extends Controller
         } else {
             return response()->fail(100, '失败', '新增用户失败');
         }
+    }
+
+//设置项目管理员
+    public function SetManage(SetManage $request)
+    {
+        $data = User::SetManage($request->id, $request->access_code);
+        if ($data == null) {
+            return response()->fail(100, '修改失败');
+        } else if ($data == '-2') {
+            return response()->fail(100, '超级管理员不可被修改');
+        } else if ($data == '-1') {
+            return response()->fail(100, '用户不存在');
+        } else if ($data == '-3') {
+            return response()->fail(100, '用户不存在');
+        } else if ($data == '1') {
+            return response()->success(200, '修改成功');
+        }
+        return response()->fail(100, '修改失败');
     }
 }
