@@ -120,19 +120,20 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
      * @return
      * @throws \Exception
      */
-    public static function getAllUsers($id, $pid){
-        try{
+    public static function getAllUsers($id, $pid)
+    {
+        try {
             $res = DB::table('users as t1')
-                ->leftjoin('project_members as t2','t1.id','=','t2.user_id')
-                ->leftjoin('projects as t3','t2.project_id','t3.id')
-                ->leftjoin('positions as t4','t1.id','t4.user_id')
-                ->select('t1.id','t1.name','t2.type','t4.position_code','t1.phone_number','t1.email','t3.name as project_name')
-                ->where('t3.amdin_user_id',$id)
-                ->where('t1.access_code','0')
-                ->where('t3.id',$pid)
+                ->leftjoin('project_members as t2', 't1.id', '=', 't2.user_id')
+                ->leftjoin('projects as t3', 't2.project_id', 't3.id')
+                ->leftjoin('positions as t4', 't1.id', 't4.user_id')
+                ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name as project_name')
+                ->where('t3.amdin_user_id', $id)
+                ->where('t1.access_code', '0')
+                ->where('t3.id', $pid)
                 ->paginate(env('PAGE_NUM'));
             return $res;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
         }
     }
@@ -315,24 +316,22 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
     }
 
     /**
-     *  查询用户
-     * @return __anonymous@8413|null
+     * @param $id
+     * @return bool
      * @throws \Exception
      */
-    public static function selectUser()
+    public static function selectUser($id)
     {
         try {
-            $user = self::orderBy('id', 'desc')->where('state', 0)->paginate(env('PAGE_NUM'));
-            $item = Project::all();
-            $data = new class
-            {
-            };
-            $data->user = $user;
-            $data->item = $item;
-            return $data;
+            $datas = ProjectMember::where('project_id', $id)->select('user_id')->get()->toArray();
+            foreach ($datas as $k => $data) {
+                $array[$k] = $data['user_id'];
+            }
+            $user = self::whereNotIn('id', $array)->orderBy('id', 'desc')->where('state', 1)->paginate(env('PAGE_NUM'));
+            return $user;
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('添加用户失败!', [$e->getMessage()]);
-            return null;
+            return false;
         }
     }
 
@@ -544,6 +543,31 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
             return false;
         }
 
+    }
+
+
+    /**
+     * @param $id
+     * @param $pid
+     * @return |null
+     * @throws \Exception
+     */
+    public static function setBackManager($id, $pid)
+    {
+        try {
+            $res = DB::table('users as t1')
+                ->leftjoin('project_members as t2', 't1.id', 't2.user_id')
+                ->leftjoin('projects as t3', 't3.id', 't2.project_id')
+                ->where('t1.id', $id)
+                ->where('t3.id', $pid)
+                ->update([
+                    't2.type' => 1,
+                ]);
+            return $res;
+        } catch (\Exception $e) {
+            \App\Utils\Logs::logError('异常:设置失败!', [$e->getMessage()]);
+            return null;
+        }
     }
 
 }

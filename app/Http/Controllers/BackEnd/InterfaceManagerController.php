@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BackEnd;
 
+use App\Model\Mutual;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -235,6 +236,7 @@ class InterfaceManagerController extends Controller
                 Logs::logError("用id为{$userId}删除接口错误，未找到接口id:" . $interface_id);
                 return response()->fail(100, '删除失败', null);
             }
+            Mutual::where('interface_id', $interface_id)->delete();
             ErrorRelation::where('interface_id', $interface_id)->delete();
             $requestTable->delete();
             $responseTableFail->delete();
@@ -259,6 +261,7 @@ class InterfaceManagerController extends Controller
         $data = json_decode($data);
         DB::beginTransaction();
         try {
+            DB::table('mutuals')->whereIn('interface_id', $data)->delete();
             DB::table('response_tables')->whereIn('interface_id', $data)->delete();
             DB::table('request_tables')->whereIn('interface_id', $data)->delete();
             DB::table('error_relations')->whereIn('interface_id', $data)->delete();

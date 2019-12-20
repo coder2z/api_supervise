@@ -11,7 +11,7 @@ class ProjectObservers
     public function created(Project $project)
     {
         try {
-            $id = Auth::id();
+            $id = auth()->id();
             $data = Project::where('amdin_user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
 

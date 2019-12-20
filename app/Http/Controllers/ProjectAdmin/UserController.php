@@ -107,4 +107,18 @@ class UserController extends Controller
             return response()->success(200, '获取成功!', $res);
         }
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function setBackManager($id){
+        $pid = Input::get('pid');
+        $res = User::setBackManager($id,$pid);
+        if($res == 0){
+            return response()->fail(100, '设置失败,已是后端管理员!', null);
+        }else{
+            return response()->success(200, '设置成功!', null);
+        }
+    }
 }

@@ -4,17 +4,14 @@ namespace App\Observers;
 
 use App\Model\InterfaceTable;
 use App\Model\LogTable;
-use App\Mail\OAuth\Welcome;
 use App\Model\User;
-use Illuminate\Database\Eloquent\Model;
-use Tymon\JWTAuth\Contracts\Providers\Auth;
 
 class InterfaceObserver
 {
     public function created(InterfaceTable $interfaceTable)
     {
         try {
-            $id = Auth::id();
+            $id = auth()->id();
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();
@@ -30,7 +27,7 @@ class InterfaceObserver
     public function updated(InterfaceTable $interfaceTable)
     {
         try {
-            $id=Auth::id();
+            $id = auth()->id();
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();
@@ -48,7 +45,7 @@ class InterfaceObserver
     public function deleted(InterfaceTable $interfaceTable)
     {
         try {
-            $id=Auth::id();
+            $id = auth()->id();
             $interface = InterfaceTable::where('user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();

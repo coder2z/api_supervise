@@ -38,6 +38,7 @@ Route::middleware('auth.check')->group(function () {
             ->where('id', '[0-9]+');//移除人员   {这里应该直接在项目人员表中删除就行，而不是设置项目id为0}
         Route::get('getUsers', 'UserController@getUsers');//获取人员(根据传入参数的不同获取不同人员)   {成员类型是什么？}
         Route::post('searchUser', 'UserController@searchUser');//搜索人员
+        Route::get('setBackManager/{id}','UserController@setBackManager');//设置后端管理员
     });
 //易康
     Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->middleware('auth.prject.admin')->group(function () {
