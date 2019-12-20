@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
 
 
@@ -76,6 +77,7 @@ class Error extends Model
         try {
             //开启事务
             DB::beginTransaction();
+            ErrorRelation::where('error_id',$e_id)->delete();
             $rs = Error::where('id', $e_id)->delete();
             DB::commit();
             return $rs;

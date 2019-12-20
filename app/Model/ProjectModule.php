@@ -16,10 +16,10 @@ class ProjectModule extends Model
     protected $guarded = [];
     //1.模块设置
     //查询模块
-    public static function selectModuleMethod($project_id)
+    public static function selectModuleMethod()
     {
         try {
-            return $module = ProjectModule::where('project_id', $project_id)->paginate(env('PAGE_NUM'), ['id', 'modules_name', 'utility', 'class_name', 'full_class_name', 'project_id']);
+            return $module = ProjectModule::paginate(env('PAGE_NUM'), ['id','modules_name', 'class_name', 'full_class_name','project_id']);
         } catch (\Exception $e) {
             \App\Utils\Logs::logError('查询模块失败!', [$e->getMessage()]);
             return null;
@@ -42,18 +42,15 @@ class ProjectModule extends Model
             return null;
         }
     }
-
     //查询单个模块信息
-    public static function oneSelectModuleMethod($m_id)
-    {
-        try {
-            return $module = ProjectModule::find($m_id, ['id', 'modules_name', 'class_name', 'full_class_name', 'project_id', 'utility']);
-        } catch (\Exception $e) {
+    public static function oneSelectModuleMethod($m_id){
+        try{
+            return $module = ProjectModule::find($m_id,['id','modules_name', 'class_name', 'full_class_name','project_id']);
+        }catch (\Exception $e){
             \App\Utils\Logs::logError('查询单个模块信息信息失败!', [$e->getMessage()]);
             return null;
         }
     }
-
     //修改模块
     public static function editModuleMethod($input, $m_id)
     {
@@ -76,6 +73,8 @@ class ProjectModule extends Model
         try {
             //开启事务
             DB::beginTransaction();
+            Assignment::where('module_id',$m_id)->delete();
+            InterfaceTable::where('module_id',$m_id)->delete();
             $rs = ProjectModule::where('id', $m_id)->delete();
             DB::commit();
             return $rs;
