@@ -81,7 +81,7 @@ class FrontEndMsgController extends Controller
     public function MyMessage(Request $request)
     {
         try {
-            $data = FeedBack::getInfo_echo($request->id);
+            $data = FeedBack::getInfo_echo($request->project_id);
             $res = array("code" => 200, "msg" => "获取信息成功", "data" => $data);
             return response()->json($res);
         } catch (\Exception $exception) {

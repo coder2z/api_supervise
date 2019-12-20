@@ -31,12 +31,18 @@ class FeedBack extends Model
             $i = 0;
             $status = self::verify();
             if ($status) {
-                $info = self::where("project_id", $id)->where(function ($query) {
-                    $query->where("to_user_id", Auth::id())->orWhere(function ($query) {
-                        $query->where("to_user_id", 0);
-                    });
-                })
-                    ->paginate(env('PAGE_NUM'));
+                if (auth()->user()->access_code == '-1') {
+                    $info = self::where("project_id", $id)
+                        ->paginate(env('PAGE_NUM'));
+                } else {
+                    $info = self::where("project_id", $id)->where(function ($query) {
+                        $query->where("to_user_id", Auth::id())->orWhere(function ($query) {
+                            $query->where("to_user_id", 0);
+                        });
+                    })
+                        ->paginate(env('PAGE_NUM'));
+                }
+
                 foreach ($info as $item) {
                     $user = User::find($item->from_uesr_id);
                     if ($user == null) $user["name"] = "用户已注销";
@@ -46,20 +52,22 @@ class FeedBack extends Model
                         "type" => $json_decode->type,
                         "from" => $user["name"],
                         "to" => Auth::user()->name,
+                        "created_at" => substr(json_decode(json_encode($item->created_at))->date, 0, strlen(json_decode(json_encode($item->created_at))->date) - 7),
+                        "updated_at" => substr(json_decode(json_encode($item->updated_at))->date, 0, strlen(json_decode(json_encode($item->updated_at))->date) - 7),
                     );
                 }
-                $info=json_decode(json_encode($info));
-                $data['current_page']=$info->current_page;
-                $data['first_page_url']=$info->first_page_url;
-                $data['from']=$info->from;
-                $data['last_page']=$info->last_page;
-                $data['last_page_url']=$info->last_page_url;
-                $data['next_page_url']=$info->next_page_url;
-                $data['path']=$info->path;
-                $data['per_page']=$info->per_page;
-                $data['prev_page_url']=$info->prev_page_url;
-                $data['to']=$info->to;
-                $data['total']=$info->total;
+                $info = json_decode(json_encode($info));
+                $data['current_page'] = $info->current_page;
+                $data['first_page_url'] = $info->first_page_url;
+                $data['from'] = $info->from;
+                $data['last_page'] = $info->last_page;
+                $data['last_page_url'] = $info->last_page_url;
+                $data['next_page_url'] = $info->next_page_url;
+                $data['path'] = $info->path;
+                $data['per_page'] = $info->per_page;
+                $data['prev_page_url'] = $info->prev_page_url;
+                $data['to'] = $info->to;
+                $data['total'] = $info->total;
                 return $data;
             } else return null;
         } catch (\Exception $exception) {
