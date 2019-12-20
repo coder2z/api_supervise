@@ -170,7 +170,7 @@ class WordController extends Controller
                                 $table->addCell(4000)->addText("说明", $fontStylebold);
                                 //第四行
                                 $swetchArray = json_decode($interfacerequestmsg->params, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                                if (is_null($swetchArray['interface_request'])) {
+                                if (empty($swetchArray['interface_request'])) {
                                     $table->addRow();
                                     $table->addCell(2000)->addText(" ", $fontStylebold);
                                     $table->addCell(2000, array('gridSpan' => 2))->addText(" ", $fontStylebold);
@@ -187,7 +187,7 @@ class WordController extends Controller
                             //第五行
                             $InterResposeMsgSucc = ResponseTable::getInterResposeMsg($getinfterfaceinfo->id, 1);
                             $InterResposeMsgFail = ResponseTable::getInterResposeMsg($getinfterfaceinfo->id, 0);
-                            if ($InterResposeMsgSucc->isEmpty() || is_null($InterResposeMsgFail)->isEmpty()) {
+                            if ($InterResposeMsgSucc->isEmpty() || $InterResposeMsgFail->isEmpty()) {
                                 return response()->fail(100, '返回示例信息不完整,请填写完整后重试！', null);
                             }
                             foreach ($InterResposeMsgSucc as $interresposemsgsucc) {

@@ -120,18 +120,19 @@ class User extends \Illuminate\Foundation\Auth\User implements JWTSubject, Authe
      * @return
      * @throws \Exception
      */
-    public static function getAllUsers($id)
-    {
-        try {
+    public static function getAllUsers($id, $pid){
+        try{
             $res = DB::table('users as t1')
-                ->leftjoin('project_members as t2', 't1.id', '=', 't2.user_id')
-                ->leftjoin('projects as t3', 't2.project_id', 't3.id')
-                ->leftjoin('positions as t4', 't1.id', 't4.user_id')
-                ->select('t1.id', 't1.name', 't2.type', 't4.position_code', 't1.phone_number', 't1.email', 't3.name as project_name')
-                ->where('t3.amdin_user_id', $id)
+                ->leftjoin('project_members as t2','t1.id','=','t2.user_id')
+                ->leftjoin('projects as t3','t2.project_id','t3.id')
+                ->leftjoin('positions as t4','t1.id','t4.user_id')
+                ->select('t1.id','t1.name','t2.type','t4.position_code','t1.phone_number','t1.email','t3.name as project_name')
+                ->where('t3.amdin_user_id',$id)
+                ->where('t1.access_code','0')
+                ->where('t3.id',$pid)
                 ->paginate(env('PAGE_NUM'));
             return $res;
-        } catch (\Exception $e) {
+        }catch (\Exception $e){
             \App\Utils\Logs::logError('获取所有人员失败!', [$e->getMessage()]);
         }
     }

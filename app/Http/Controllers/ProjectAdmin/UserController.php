@@ -16,12 +16,17 @@ class UserController extends Controller
      * @return mixed
      * @throws \Exception
      */
-    public function getAllUsers(){
+    public function getAllUsers()
+    {
         $id = Auth::id();
-        if($id == null) {
+        $pid = Input::get("pid");
+        if ($pid == null) {
+            return response()->fail(100, '项目未知!');
+        }
+        if ($id == null) {
             return response()->fail(100, '身份异常!');
         }
-        $userInfo = User::getAllUsers($id);
+        $userInfo = User::getAllUsers($id, $pid);
         return $userInfo != null ?
             response()->success(200, '获取成功!', $userInfo) :
             response()->fail(100, '未查询到数据!');
@@ -33,7 +38,8 @@ class UserController extends Controller
      * @return mixed
      * @throws \Exception
      */
-    public function getUpdateUser($id){
+    public function getUpdateUser($id)
+    {
         $res = User::getUpdateUsers($id);
         return $res != null ?
             response()->success(200, '获取成功!', $res) :
@@ -46,8 +52,9 @@ class UserController extends Controller
      * @param $id
      * @return mixed
      */
-    public function updateUser(Request $request,$id){
-        $res = User::updateUser($request,$id);
+    public function updateUser(Request $request, $id)
+    {
+        $res = User::updateUser($request, $id);
         return $res != 0 ?
             response()->success(200, '修改成功!', $res) :
             response()->fail(100, '修改失败!');
@@ -59,9 +66,10 @@ class UserController extends Controller
      * @param $id
      * @return mixed
      */
-    public function deleteUser($id){
+    public function deleteUser($id)
+    {
         $pid = Input::get('pid');
-        $res = User::deleteUser($pid,$id);
+        $res = User::deleteUser($pid, $id);
         return $res != 0 ?
             response()->success(200, '移除成功!', $res) :
             response()->fail(100, '人员不存在!');
@@ -71,14 +79,15 @@ class UserController extends Controller
      * 获取人员（根据传入值得不同获取不同人员）
      * @return mixed
      */
-    public function getUsers(){
+    public function getUsers()
+    {
         $data = Input::all();
-        if($data != null){
+        if ($data != null) {
             $res = User::getUsers($data);
             return $res != null ?
                 response()->success(200, '获取成功!', $res) :
                 response()->fail(100, '获取失败!');
-        }else{
+        } else {
             response()->fail(100, '参数未传');
         }
     }
@@ -88,12 +97,13 @@ class UserController extends Controller
      * @return mixed
      * @throws \Exception
      */
-    public function searchUser(searchRequest $request){
+    public function searchUser(searchRequest $request)
+    {
         $data = $request->Content;
         $res = User::searchUser($data);
-        if($res['data'] == null){
+        if ($res['data'] == null) {
             return response()->fail(100, '未查询到数据!', null);
-        }else{
+        } else {
             return response()->success(200, '获取成功!', $res);
         }
     }

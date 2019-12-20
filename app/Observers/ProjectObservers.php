@@ -4,9 +4,7 @@ namespace App\Observers;
 
 use App\Model\Project;
 use App\Model\User;
-use Illuminate\Database\Eloquent\Model;
 use App\Model\LogTable;
-use Tymon\JWTAuth\Contracts\Providers\Auth;
 
 class ProjectObservers
 {
@@ -33,7 +31,7 @@ class ProjectObservers
     public function updated()
     {
         try {
-            $id = Auth::id();
+            $id = auth()->id();
             $data = Project::where('amdin_user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
 
@@ -53,7 +51,7 @@ class ProjectObservers
     public function delete()
     {
         try {
-            $id = Auth::id();
+            $id = auth()->id();
             $data = Project::where('amdin_user_id', $id)->orderby('id', 'desc')->first();
             $user = User::where('id', $id)->first();
             $res = new LogTable();

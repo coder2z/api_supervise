@@ -12,6 +12,10 @@ use phpDocumentor\Reflection\Project;
 
 class InviteController extends Controller
 {
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
     Public function getMembersItem(){
         $UserAll = User::selectUser();
         return $UserAll != null ?
@@ -32,6 +36,11 @@ class InviteController extends Controller
     }
 
 
+    /**
+     * @param QueryUsers $queryUsers
+     * @return mixed
+     * @throws \Exception
+     */
     public function queryUsers(QueryUsers $queryUsers){
         $data = User::queryUsers($queryUsers['str']);
         return $data != null ?

@@ -6,10 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectAdmin\Project\getProjectRequest;
 use App\Model\Annex;
 use App\Model\Project;
-use App\Model\User;
 use App\Utils\Logs;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -59,25 +57,20 @@ class ProjectController extends Controller
             Logs::logError('传入id值小于零');
             return response()->fail(100, '传入id值小于零', null);
         }
-        if (!self::CheckAdminId(auth()->user())) {
-            return response()->fail(100, '用户权限不够', null);
-        }
         $setpro = Project::updateProject(self::projectHandle($request), $id);
         if (!$setpro) return response()->fail(100, '更新项目失败', null);
-
         if ($word = Annex::FindAnnexPath($id, 2))
             if (!self::deleteAnnex($word, 'word'))
-                return response()->fail(100, '删除word文件失败', null);
+                return response()->fail(100, '上传word文件失败', null);
         if ($rp = Annex::FindAnnexPath($id, 1))
             if (!self::deleteAnnex($rp, 'rp'))
-                return response()->fail(100, '删除rp文件失败', null);
-
+                return response()->fail(100, '上传rp文件失败', null);
         if (!self::upload($request->RequirementDocument, 'word', $id))
             return response()->fail(100, 'word文件有问题', null);
         if (!self::upload($request->PrototyMap, 'rp', $id))
             return response()->fail(100, 'rp文件有问题  ', null);
         Logs::logInfo('更新项目成功');
-        return response()->success(200, '更新成功', null);
+        return response()->success(200, '更新成功');
     }
 
     /**
@@ -169,6 +162,7 @@ class ProjectController extends Controller
                 $fileprop['path'] = $filepath;
                 return Annex::createAnnexes($fileprop, $status);
             }
+            return false;
         } catch (Exception $e) {
             Logs::logError('上传文件失败!', [$e->getMessage()]);
             return false;
@@ -192,7 +186,7 @@ class ProjectController extends Controller
     {
         $projectinfo['name'] = $request->ProjectName;
         $projectinfo['discribe'] = $request->ProjectDescription;
-        $projectinfo['amdin_user_id'] = Auth::id();
+        $projectinfo['amdin_user_id'] = auth()->id();
         $projectinfo['pre_url'] = 'null';
         return $projectinfo;
     }

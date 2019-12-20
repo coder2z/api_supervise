@@ -85,4 +85,16 @@ class ProjectModule extends Model
         }
     }
 
+    //获取所有的模型名(单用)
+    public static function findModules($project_id){
+        try{
+            $result = self::where('project_id',$project_id)
+                ->select('id','project_id','modules_name','class_name','full_class_name','utility')
+                ->get();
+            return $result;
+        } catch (Exception $e){
+            Logs::logError('获取所有模型信息失败!', [$e->getMessage()]);
+            return response()->fail(100, '获取所有模型信息失败，请重试!', null);
+        }
+    }
 }

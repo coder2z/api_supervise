@@ -87,4 +87,18 @@ class Error extends Model
             return null;
         }
     }
+
+    //获取错误全部错误码（单用）
+    public static function getStatusCode($project_id)
+    {
+        try {
+            $result = self::where('project_id', $project_id)
+                ->select('id', 'error_code', 'error_info', 'http_code')
+                ->get();
+            return $result;
+        } catch (Exception $e) {
+            Logs::logError('查询错误全部错误码失败!', [$e->getMessage()]);
+            return response()->fail(100, '查询错误全部错误码失败，请重试!', null);
+        }
+    }
 }
