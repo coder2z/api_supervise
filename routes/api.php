@@ -25,9 +25,7 @@ Route::prefix('oAuth')->namespace('OAuth')->group(function () {
     Route::post('changePassword', 'AuthController@changePassword');//修改密码
 });
 Route::middleware('auth.check')->group(function () {
-//魏子超
     Route::get('logs', 'Logs\LogController@logs');
-//zhengruyuan
     Route::prefix('projectadmin')->namespace('ProjectAdmin')->middleware('auth.prject.admin')->group(function () {
         Route::get('getAllUsers', 'UserController@getAllUsers');//显示全部人员    {项目管理员只能看到自己的项目！这里查询的是所有}
         Route::get('getUpdateUser/{id}', 'UserController@getUpdateUser')
@@ -40,7 +38,6 @@ Route::middleware('auth.check')->group(function () {
         Route::post('searchUser', 'UserController@searchUser');//搜索人员
         Route::get('setBackManager/{id}','UserController@setBackManager');//设置后端管理员
     });
-//易康
     Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->middleware('auth.prject.admin')->group(function () {
         Route::get('getAllProject', 'ProjectController@getAllProject'); //项目管理员获取全部项目信息
         Route::get('getProject/{id}', 'ProjectController@getProject')
@@ -63,31 +60,26 @@ Route::middleware('auth.check')->group(function () {
         Route::get('SetManage', 'AdminController@SetManage');//设置项目管理员
     });
 
-//倪煜
     Route::get("/MyMessage", "Message\FrontEndMsgController@MyMessage");//获取反馈信息列表
     Route::post("/SendMail_All_Back", "Message\FrontEndMsgController@SendMail_All_Back");//前端增加所在项目反馈信息并发送邮件（项目全部后端）
 
-//刘志伟
     Route::prefix('Message')->namespace('Message')->group(function () {
         Route::get('showMessage', 'BackEndMsgController@showMessage');//查看所有消息
         Route::get('fromMessage', 'BackEndMsgController@fromMessage');//查看我的反馈
         Route::get('toMessage', 'BackEndMsgController@toMessage');//查看发给我的消息
     });
 
-//zhangmaolin
     Route::prefix('Message')->namespace('Message')->group(function () {
         Route::post('FrontEndInterfaceController', 'FrontEndInterfaceController@FrontEndInterfaceController');//前端将信息反馈给后端  {邮件}
         Route::get('viewFeedback ', 'viewFeedback@viewFeedback');//查看反馈信息   {一个人会有很多的反馈消息，这里查询有问题}
     });
 
-//吕永杰
     Route::prefix('ProjectAdmin')->namespace('ProjectAdmin')->middleware('auth.prject.admin')->group(function () {
         Route::get('membersItem', 'InviteController@getMembersItem');//查询所有用户
         Route::get('addMembers', 'InviteController@addMembers');//添加项目成员
         Route::post('queryUsers', 'InviteController@queryUsers');//查询用户
     });
     /**
-     * 文艺
      *     获取所有项目
      */
     Route::prefix('QueryAllProject')->namespace('QueryAllProject')->group(function () {
@@ -95,7 +87,6 @@ Route::middleware('auth.check')->group(function () {
     });
 
     /**
-     * 聂鹏郦
      *      1. 项目配置文件信息
      *      2. 提供下载
      */
@@ -105,7 +96,6 @@ Route::middleware('auth.check')->group(function () {
     });
 
     /**
-     * 蒋武君
      *      1. 上传修改更新文件及GitHub地址
      *      2. 任务管理的人员分配CRUD
      */
@@ -122,7 +112,6 @@ Route::middleware('auth.check')->group(function () {
     });
 
     /**
-     * 仇政永
      *     1. 审核接口
      *     2. 接口查询和筛选
      */
@@ -145,7 +134,6 @@ Route::middleware('auth.check')->group(function () {
     });
 
     /**
-     * 李承坤
      *     1. 前端人员对接口进行查询、搜索、添加是否交互
      *     2. 后端人员对接口进行增删查改，批量删除
      */
@@ -184,7 +172,6 @@ Route::middleware('auth.check')->group(function () {
             ->where('interface_id', '[0-9]+');
     });
     /**
-     * 欧阳生林 ～后端管理员
      *       1. 模块设置.
      *       2.错误码设置
      */
